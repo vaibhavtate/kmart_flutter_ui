@@ -1,0 +1,1 @@
+Replace only lib/screens/home/home_screen.dart with this complete file. Keep your existing models, provider, repository, and assets. Then run flutter analyze lib and flutter run -d chrome.

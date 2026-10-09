@@ -1,0 +1,149 @@
+
+Widget _buildStoreExperienceBanner() {
+  return Container(
+    height: 245,
+    clipBehavior: Clip.antiAlias,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(18),
+      border: Border.all(color: AppColors.border),
+    ),
+    child: Stack(
+      fit: StackFit.expand,
+      children: [
+        Image.asset(
+          'assets/images/kmart_store.jpg',
+          fit: BoxFit.cover,
+        ),
+
+        // Keeps the text readable while preserving the store image.
+        DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [
+                Colors.black.withValues(alpha: 0.72),
+                Colors.black.withValues(alpha: 0.34),
+                Colors.transparent,
+              ],
+              stops: const [0.0, 0.52, 1.0],
+            ),
+          ),
+        ),
+
+        Padding(
+          padding: const EdgeInsets.all(18),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 245),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 9,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: const Text(
+                      'K MART STORE',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: .7,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 9),
+                  const Text(
+                    'Your K Mart,\nYour Everyday Store',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      height: 1.08,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Quality products, great deals and convenient delivery from your local K Mart store.',
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10.5,
+                      height: 1.35,
+                    ),
+                  ),
+                  const SizedBox(height: 11),
+                  Row(
+                    children: [
+                      _StoreFeature(
+                        icon: Icons.local_shipping_outlined,
+                        label: 'Fast Delivery',
+                      ),
+                      const SizedBox(width: 6),
+                      _StoreFeature(
+                        icon: Icons.verified_outlined,
+                        label: 'Quality',
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _StoreFeature extends StatelessWidget {
+  const _StoreFeature({
+    required this.icon,
+    required this.label,
+  });
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 7,
+        vertical: 5,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.92),
+        borderRadius: BorderRadius.circular(7),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 13,
+            color: AppColors.navy,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 8.5,
+              fontWeight: FontWeight.w800,
+              color: AppColors.navy,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

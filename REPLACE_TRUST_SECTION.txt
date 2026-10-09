@@ -1,0 +1,25 @@
+1. Copy assets/images/kmart_store.jpg into your Flutter project:
+   assets/images/kmart_store.jpg
+
+2. In pubspec.yaml make sure this exists:
+   flutter:
+     assets:
+       - .env
+       - assets/images/
+
+3. In lib/screens/home/home_screen.dart:
+   - Add the _buildStoreExperienceBanner() method and _StoreFeature class from
+     store_banner_widget.txt (or use the code below).
+   - Find the existing call:
+       _buildTrustStrip(),
+     and replace it with:
+       _buildStoreExperienceBanner(),
+   - You can then delete _buildTrustStrip() if it is no longer used.
+
+4. Run:
+   flutter pub get
+   flutter analyze lib
+   flutter run -d chrome
+
+The supplied store photo is used as a local Flutter asset. No external image URL
+is required.
