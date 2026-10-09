@@ -7,9 +7,7 @@ class SupabaseConfig {
     final value = dotenv.env['SUPABASE_URL'];
 
     if (value == null || value.isEmpty) {
-      throw Exception(
-        'SUPABASE_URL is missing from .env',
-      );
+      throw Exception('SUPABASE_URL is missing from .env');
     }
 
     return value;
@@ -19,9 +17,7 @@ class SupabaseConfig {
     final value = dotenv.env['SUPABASE_ANON_KEY'];
 
     if (value == null || value.isEmpty) {
-      throw Exception(
-        'SUPABASE_ANON_KEY is missing from .env',
-      );
+      throw Exception('SUPABASE_ANON_KEY is missing from .env');
     }
 
     return value;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../theme/app_colors.dart';
 
 class KMartMobileHeader extends StatefulWidget {
@@ -50,7 +51,12 @@ class _KMartMobileHeaderState extends State<KMartMobileHeader> {
                 children: [
                   _Logo(),
                   const SizedBox(width: 10),
-                  Expanded(child: _Location(onTap: widget.onLocationTap, address: widget.address)),
+                  Expanded(
+                    child: _Location(
+                      onTap: widget.onLocationTap,
+                      address: widget.address,
+                    ),
+                  ),
                   const SizedBox(width: 8),
                   _Cart(onTap: widget.onCartTap, count: widget.cartCount),
                 ],
@@ -79,7 +85,11 @@ class _Logo extends StatelessWidget {
         fit: BoxFit.contain,
         errorBuilder: (_, __, ___) => const Text(
           'K MART',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: AppColors.navy),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w900,
+            color: AppColors.navy,
+          ),
         ),
       ),
     );
@@ -106,17 +116,34 @@ class _Location extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Deliver to', style: TextStyle(fontSize: 10, color: AppColors.textSecondary, height: 1.1)),
+                  const Text(
+                    'Deliver to',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: AppColors.textSecondary,
+                      height: 1.1,
+                    ),
+                  ),
                   Text(
-                    address?.trim().isNotEmpty == true ? address! : 'Select delivery location',
+                    address?.trim().isNotEmpty == true
+                        ? address!
+                        : 'Select delivery location',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.navy),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.navy,
+                    ),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.keyboard_arrow_down, size: 18, color: AppColors.textSecondary),
+            const Icon(
+              Icons.keyboard_arrow_down,
+              size: 18,
+              color: AppColors.textSecondary,
+            ),
           ],
         ),
       ),
@@ -140,7 +167,11 @@ class _SearchField extends StatelessWidget {
         prefixIcon: const Icon(Icons.search, color: AppColors.navy, size: 21),
         suffixIcon: IconButton(
           onPressed: () => onSubmitted?.call(controller.text.trim()),
-          icon: const Icon(Icons.arrow_forward_rounded, color: AppColors.primary, size: 21),
+          icon: const Icon(
+            Icons.arrow_forward_rounded,
+            color: AppColors.primary,
+            size: 21,
+          ),
         ),
         filled: true,
         fillColor: const Color(0xFFF5F6F8),
@@ -181,7 +212,11 @@ class _Cart extends StatelessWidget {
             child: const SizedBox(
               width: 42,
               height: 42,
-              child: Icon(Icons.shopping_cart_outlined, color: AppColors.navy, size: 22),
+              child: Icon(
+                Icons.shopping_cart_outlined,
+                color: AppColors.navy,
+                size: 22,
+              ),
             ),
           ),
         ),
@@ -192,9 +227,20 @@ class _Cart extends StatelessWidget {
             child: Container(
               constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
               padding: const EdgeInsets.symmetric(horizontal: 4),
-              decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.white, width: 2)),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.white, width: 2),
+              ),
               child: Center(
-                child: Text('$count', style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w800)),
+                child: Text(
+                  '$count',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 9,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
               ),
             ),
           ),

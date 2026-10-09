@@ -6,22 +6,16 @@ import '../../providers/auth_provider.dart';
 import 'otp_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({
-    super.key,
-  });
+  const LoginScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() =>
-      _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState
-    extends ConsumerState<LoginScreen> {
-  final _phoneController =
-      TextEditingController();
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final _phoneController = TextEditingController();
 
-  final _formKey =
-      GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -36,35 +30,26 @@ class _LoginScreenState
 
     final success = await ref
         .read(authControllerProvider.notifier)
-        .sendOtp(
-          _phoneController.text,
-        );
+        .sendOtp(_phoneController.text);
 
     if (!mounted) return;
 
     if (success) {
-      final normalized = ref
-          .read(authControllerProvider)
-          .phone;
+      final normalized = ref.read(authControllerProvider).phone;
 
       if (normalized == null) {
         return;
       }
 
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => OtpScreen(
-            phone: normalized,
-          ),
-        ),
-      );
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => OtpScreen(phone: normalized)));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final authState =
-        ref.watch(authControllerProvider);
+    final authState = ref.watch(authControllerProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -75,8 +60,7 @@ class _LoginScreenState
             child: Form(
               key: _formKey,
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
                     child: Container(
@@ -84,8 +68,7 @@ class _LoginScreenState
                       height: 76,
                       decoration: BoxDecoration(
                         color: AppColors.primary,
-                        borderRadius:
-                            BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Icon(
                         Icons.shopping_bag_outlined,
@@ -129,60 +112,42 @@ class _LoginScreenState
                   const SizedBox(height: 8),
                   TextFormField(
                     controller: _phoneController,
-                    keyboardType:
-                        TextInputType.phone,
+                    keyboardType: TextInputType.phone,
                     maxLength: 10,
                     decoration: InputDecoration(
                       counterText: '',
                       prefixText: '+91  ',
-                      prefixStyle:
-                          const TextStyle(
-                        color:
-                            AppColors.textPrimary,
-                        fontWeight:
-                            FontWeight.w700,
+                      prefixStyle: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w700,
                       ),
                       hintText: 'Enter mobile number',
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          color: AppColors.border,
-                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: AppColors.border),
                       ),
-                      enabledBorder:
-                          OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          color: AppColors.border,
-                        ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: AppColors.border),
                       ),
-                      focusedBorder:
-                          OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(12),
-                        borderSide:
-                            const BorderSide(
-                          color:
-                              AppColors.primary,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: AppColors.primary,
                           width: 1.5,
                         ),
                       ),
                     ),
                     validator: (value) {
-                      final phone =
-                          value?.trim() ?? '';
+                      final phone = value?.trim() ?? '';
 
                       if (phone.length != 10) {
                         return 'Enter a valid 10-digit mobile number';
                       }
 
-                      if (!RegExp(
-                        r'^[6-9][0-9]{9}$',
-                      ).hasMatch(phone)) {
+                      if (!RegExp(r'^[6-9][0-9]{9}$').hasMatch(phone)) {
                         return 'Enter a valid Indian mobile number';
                       }
 
@@ -193,10 +158,7 @@ class _LoginScreenState
                     const SizedBox(height: 10),
                     Text(
                       authState.error!,
-                      style: const TextStyle(
-                        color: Colors.red,
-                        fontSize: 12,
-                      ),
+                      style: const TextStyle(color: Colors.red, fontSize: 12),
                     ),
                   ],
                   const SizedBox(height: 20),
@@ -204,27 +166,18 @@ class _LoginScreenState
                     width: double.infinity,
                     height: 52,
                     child: FilledButton(
-                      onPressed: authState.isLoading
-                          ? null
-                          : _sendOtp,
-                      style:
-                          FilledButton.styleFrom(
-                        backgroundColor:
-                            AppColors.primary,
-                        shape:
-                            RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(
-                            12,
-                          ),
+                      onPressed: authState.isLoading ? null : _sendOtp,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       child: authState.isLoading
                           ? const SizedBox(
                               width: 21,
                               height: 21,
-                              child:
-                                  CircularProgressIndicator(
+                              child: CircularProgressIndicator(
                                 strokeWidth: 2,
                                 color: Colors.white,
                               ),
@@ -233,8 +186,7 @@ class _LoginScreenState
                               'Send OTP',
                               style: TextStyle(
                                 fontSize: 14,
-                                fontWeight:
-                                    FontWeight.w900,
+                                fontWeight: FontWeight.w900,
                               ),
                             ),
                     ),
@@ -245,8 +197,7 @@ class _LoginScreenState
                       'By continuing, you agree to use your mobile number for K Mart authentication.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color:
-                            AppColors.textSecondary,
+                        color: AppColors.textSecondary,
                         fontSize: 11,
                         height: 1.4,
                       ),

@@ -4,9 +4,8 @@ import '../models/cart_model.dart';
 import '../models/product_model.dart';
 
 class CartRepository {
-  CartRepository({
-    SupabaseClient? client,
-  }) : _client = client ?? Supabase.instance.client;
+  CartRepository({SupabaseClient? client})
+    : _client = client ?? Supabase.instance.client;
 
   final SupabaseClient _client;
 
@@ -22,9 +21,7 @@ class CartRepository {
     final user = _client.auth.currentUser;
 
     if (user == null) {
-      throw Exception(
-        'You must be logged in to use the cart.',
-      );
+      throw Exception('You must be logged in to use the cart.');
     }
 
     final response = await _client
@@ -34,17 +31,13 @@ class CartRepository {
         .maybeSingle();
 
     if (response == null) {
-      throw Exception(
-        'Customer profile not found for the logged-in user.',
-      );
+      throw Exception('Customer profile not found for the logged-in user.');
     }
 
     final customerId = response['id'];
 
     if (customerId == null) {
-      throw Exception(
-        'Customer ID is missing for the logged-in user.',
-      );
+      throw Exception('Customer ID is missing for the logged-in user.');
     }
 
     return customerId.toString();
@@ -63,26 +56,18 @@ class CartRepository {
       return null;
     }
 
-    final cart = Map<String, dynamic>.from(
-      cartResponse,
-    );
+    final cart = Map<String, dynamic>.from(cartResponse);
 
     final cartId = '${cart['id']}';
 
     final itemResponse = await _client
         .from('cart_items')
-        .select(
-          'id, cart_id, product_id, quantity',
-        )
+        .select('id, cart_id, product_id, quantity')
         .eq('cart_id', cartId)
         .order('id');
 
     final itemRows = (itemResponse as List)
-        .map(
-          (row) => Map<String, dynamic>.from(
-            row as Map,
-          ),
-        )
+        .map((row) => Map<String, dynamic>.from(row as Map))
         .toList();
 
     if (itemRows.isEmpty) {
@@ -90,16 +75,12 @@ class CartRepository {
         id: cartId,
         customerId: '${cart['customer_id']}',
         items: const [],
-        updatedAt: _parseDate(
-          cart['updated_at'],
-        ),
+        updatedAt: _parseDate(cart['updated_at']),
       );
     }
 
     final productIds = itemRows
-        .map(
-          (row) => '${row['product_id']}',
-        )
+        .map((row) => '${row['product_id']}')
         .toSet()
         .toList();
 
@@ -111,9 +92,7 @@ class CartRepository {
     final productById = <String, ProductModel>{};
 
     for (final row in productResponse as List) {
-      final map = Map<String, dynamic>.from(
-        row as Map,
-      );
+      final map = Map<String, dynamic>.from(row as Map);
 
       final product = ProductModel.fromMap(map);
 
@@ -130,9 +109,7 @@ class CartRepository {
         continue;
       }
 
-      final quantity = _parseInt(
-        row['quantity'],
-      );
+      final quantity = _parseInt(row['quantity']);
 
       if (quantity <= 0) {
         continue;
@@ -153,9 +130,7 @@ class CartRepository {
       id: cartId,
       customerId: '${cart['customer_id']}',
       items: items,
-      updatedAt: _parseDate(
-        cart['updated_at'],
-      ),
+      updatedAt: _parseDate(cart['updated_at']),
     );
   }
 
@@ -170,25 +145,17 @@ class CartRepository {
 
     final response = await _client
         .from('carts')
-        .insert({
-          'customer_id': customerId,
-        })
-        .select(
-          'id, customer_id, updated_at',
-        )
+        .insert({'customer_id': customerId})
+        .select('id, customer_id, updated_at')
         .single();
 
-    final cart = Map<String, dynamic>.from(
-      response,
-    );
+    final cart = Map<String, dynamic>.from(response);
 
     return CartModel(
       id: '${cart['id']}',
       customerId: '${cart['customer_id']}',
       items: const [],
-      updatedAt: _parseDate(
-        cart['updated_at'],
-      ),
+      updatedAt: _parseDate(cart['updated_at']),
     );
   }
 
@@ -196,46 +163,20 @@ class CartRepository {
     required String productId,
     required int quantity,
   }) async {
-    if (quantity <= 0) {
-      return;
-    }
+    if (quantity <= 0) return;
 
     final cart = await getOrCreateCart();
 
-    final existing = await _client
-        .from('cart_items')
-        .select('id, quantity')
-        .eq('cart_id', cart.id)
-        .eq('product_id', productId)
-        .maybeSingle();
-
-    if (existing == null) {
-      await _client.from('cart_items').insert({
-        'cart_id': cart.id,
-        'product_id': productId,
-        'quantity': quantity,
-      });
-
-      return;
-    }
-
-    final existingMap = Map<String, dynamic>.from(
-      existing,
+    // Atomic increment is implemented in the accompanying Supabase migration.
+    // This avoids the race in a client-side SELECT followed by INSERT/UPDATE.
+    await _client.rpc(
+      'add_to_cart_item',
+      params: {
+        'p_cart_id': cart.id,
+        'p_product_id': productId,
+        'p_quantity': quantity,
+      },
     );
-
-    final currentQuantity = _parseInt(
-      existingMap['quantity'],
-    );
-
-    await _client
-        .from('cart_items')
-        .update({
-          'quantity': currentQuantity + quantity,
-        })
-        .eq(
-          'id',
-          '${existingMap['id']}',
-        );
   }
 
   Future<void> updateItemQuantity({
@@ -249,25 +190,12 @@ class CartRepository {
 
     await _client
         .from('cart_items')
-        .update({
-          'quantity': quantity,
-        })
-        .eq(
-          'id',
-          cartItemId,
-        );
+        .update({'quantity': quantity})
+        .eq('id', cartItemId);
   }
 
-  Future<void> removeItem(
-    String cartItemId,
-  ) async {
-    await _client
-        .from('cart_items')
-        .delete()
-        .eq(
-          'id',
-          cartItemId,
-        );
+  Future<void> removeItem(String cartItemId) async {
+    await _client.from('cart_items').delete().eq('id', cartItemId);
   }
 
   Future<void> clearCart() async {
@@ -277,13 +205,7 @@ class CartRepository {
       return;
     }
 
-    await _client
-        .from('cart_items')
-        .delete()
-        .eq(
-          'cart_id',
-          cart.id,
-        );
+    await _client.from('cart_items').delete().eq('cart_id', cart.id);
   }
 
   static int _parseInt(dynamic value) {
@@ -295,10 +217,7 @@ class CartRepository {
       return value.toInt();
     }
 
-    return int.tryParse(
-          '$value',
-        ) ??
-        0;
+    return int.tryParse('$value') ?? 0;
   }
 
   static DateTime? _parseDate(dynamic value) {
@@ -306,8 +225,6 @@ class CartRepository {
       return null;
     }
 
-    return DateTime.tryParse(
-      '$value',
-    );
+    return DateTime.tryParse('$value');
   }
 }

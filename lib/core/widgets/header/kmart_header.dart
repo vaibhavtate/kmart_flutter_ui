@@ -63,10 +63,7 @@ class _KMartHeaderState extends State<KMartHeader> {
       shadowColor: Colors.black.withValues(alpha: 0.06),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildMainRow(context),
-          _buildCategoryRow(context),
-        ],
+        children: [_buildMainRow(context), _buildCategoryRow(context)],
       ),
     );
   }
@@ -167,28 +164,49 @@ class _KMartHeaderState extends State<KMartHeader> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.location_on_outlined, size: 18, color: AppColors.primary),
+            const Icon(
+              Icons.location_on_outlined,
+              size: 18,
+              color: AppColors.primary,
+            ),
             const SizedBox(width: 6),
             Flexible(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('Deliver to', style: TextStyle(fontSize: 11, color: AppColors.textSecondary, height: 1.1)),
+                  const Text(
+                    'Deliver to',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: AppColors.textSecondary,
+                      height: 1.1,
+                    ),
+                  ),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 180),
                         child: Text(
-                          widget.selectedAddress?.trim().isNotEmpty == true ? widget.selectedAddress! : 'Baramati 413102',
+                          widget.selectedAddress?.trim().isNotEmpty == true
+                              ? widget.selectedAddress!
+                              : 'Baramati 413102',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.navy),
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.navy,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 2),
-                      const Icon(Icons.keyboard_arrow_down, size: 16, color: AppColors.textSecondary),
+                      const Icon(
+                        Icons.keyboard_arrow_down,
+                        size: 16,
+                        color: AppColors.textSecondary,
+                      ),
                     ],
                   ),
                 ],
@@ -210,19 +228,32 @@ class _KMartHeaderState extends State<KMartHeader> {
         onChanged: (_) => setState(() {}),
         decoration: InputDecoration(
           hintText: 'Search products, brands and more...',
-          prefixIcon: const Icon(Icons.search, size: 20, color: Color(0xFF9CA3AF)),
+          prefixIcon: const Icon(
+            Icons.search,
+            size: 20,
+            color: Color(0xFF9CA3AF),
+          ),
           suffixIcon: _searchController.text.isEmpty
               ? Container(
                   margin: const EdgeInsets.all(4),
                   child: FilledButton(
-                    onPressed: () => widget.onSearch?.call(_searchController.text.trim()),
+                    onPressed: () =>
+                        widget.onSearch?.call(_searchController.text.trim()),
                     style: FilledButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
-                    child: const Text('Search', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                    child: const Text(
+                      'Search',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
                 )
               : IconButton(
@@ -235,7 +266,10 @@ class _KMartHeaderState extends State<KMartHeader> {
                 ),
           filled: true,
           fillColor: _searchFocused ? Colors.white : const Color(0xFFF9FAFB),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 12,
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
@@ -255,7 +289,9 @@ class _KMartHeaderState extends State<KMartHeader> {
 
   Widget _buildCategoryRow(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(border: Border(top: BorderSide(color: Color(0xFFF0F0F0)))),
+      decoration: const BoxDecoration(
+        border: Border(top: BorderSide(color: Color(0xFFF0F0F0))),
+      ),
       child: SizedBox(
         height: 44,
         child: ListView(
@@ -270,7 +306,14 @@ class _KMartHeaderState extends State<KMartHeader> {
                   children: [
                     Icon(Icons.menu, size: 17, color: AppColors.navy),
                     SizedBox(width: 5),
-                    Text('All Categories', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.navy)),
+                    Text(
+                      'All Categories',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.navy,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -296,7 +339,11 @@ class _KMartHeaderState extends State<KMartHeader> {
 }
 
 class _CategoryButton extends StatelessWidget {
-  const _CategoryButton({required this.label, required this.selected, required this.onTap});
+  const _CategoryButton({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
   final String label;
   final bool selected;
   final VoidCallback onTap;
@@ -323,7 +370,12 @@ class _CategoryButton extends StatelessWidget {
 }
 
 class _HeaderTextButton extends StatelessWidget {
-  const _HeaderTextButton({required this.label, this.icon, this.onTap, this.compact = false});
+  const _HeaderTextButton({
+    required this.label,
+    this.icon,
+    this.onTap,
+    this.compact = false,
+  });
   final String label;
   final IconData? icon;
   final VoidCallback? onTap;
@@ -338,12 +390,21 @@ class _HeaderTextButton extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: compact ? 7 : 0),
       ),
       child: icon == null
-          ? Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))
+          ? Text(
+              label,
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+            )
           : Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(icon, size: 19),
-                Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w600)),
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ],
             ),
     );
@@ -358,13 +419,19 @@ class _CartButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onTap,
-      style: TextButton.styleFrom(foregroundColor: AppColors.navy, padding: EdgeInsets.zero),
+      style: TextButton.styleFrom(
+        foregroundColor: AppColors.navy,
+        padding: EdgeInsets.zero,
+      ),
       child: const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.shopping_cart_outlined, size: 21),
           SizedBox(width: 5),
-          Text('Cart', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+          Text(
+            'Cart',
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+          ),
         ],
       ),
     );

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,45 +5,30 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../providers/location_provider.dart';
 import '../../services/location_service.dart';
+
 class LocationScreen extends ConsumerStatefulWidget {
   const LocationScreen({super.key});
 
   @override
-  ConsumerState<LocationScreen> createState() =>
-      _LocationScreenState();
+  ConsumerState<LocationScreen> createState() => _LocationScreenState();
 }
 
-class _LocationScreenState
-    extends ConsumerState<LocationScreen> {
-  final TextEditingController _searchController =
-      TextEditingController();
-
-  Timer? _searchTimer;
+class _LocationScreenState extends ConsumerState<LocationScreen> {
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void dispose() {
-    _searchTimer?.cancel();
     _searchController.dispose();
     super.dispose();
   }
 
-  void _onSearchChanged(String value) {
-    _searchTimer?.cancel();
-
-    _searchTimer = Timer(
-      const Duration(milliseconds: 500),
-      () {
-        ref
-            .read(locationProvider.notifier)
-            .search(value);
-      },
-    );
+  void _submitSearch(String value) {
+    FocusScope.of(context).unfocus();
+    ref.read(locationProvider.notifier).search(value);
   }
 
   Future<void> _useCurrentLocation() async {
-    await ref
-        .read(locationProvider.notifier)
-        .useCurrentLocation();
+    await ref.read(locationProvider.notifier).useCurrentLocation();
 
     if (!mounted) return;
 
@@ -56,14 +39,10 @@ class _LocationScreenState
     }
   }
 
-  Future<void> _selectResult(
-    LocationSearchResult result,
-  ) async {
+  Future<void> _selectResult(LocationSearchResult result) async {
     FocusScope.of(context).unfocus();
 
-    await ref
-        .read(locationProvider.notifier)
-        .selectSearchResult(result);
+    await ref.read(locationProvider.notifier).selectSearchResult(result);
 
     if (!mounted) return;
 
@@ -74,27 +53,24 @@ class _LocationScreenState
     }
   }
 
- void _showSuccessAndContinue() {
-  final state = ref.read(locationProvider);
+  void _showSuccessAndContinue() {
+    final state = ref.read(locationProvider);
 
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(
-        'Delivery available from ${state.selectedStore?.name ?? 'K Mart'}.',
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Delivery available from ${state.selectedStore?.name ?? 'K Mart'}.',
+        ),
+        behavior: SnackBarBehavior.floating,
       ),
-      behavior: SnackBarBehavior.floating,
-    ),
-  );
+    );
 
-  Future.delayed(
-    const Duration(milliseconds: 700),
-    () {
+    Future.delayed(const Duration(milliseconds: 700), () {
       if (!mounted) return;
 
       context.go('/');
-    },
-  );
-}
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,8 +87,7 @@ class _LocationScreenState
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 'Where should we deliver?',
@@ -135,76 +110,61 @@ class _LocationScreenState
 
               TextField(
                 controller: _searchController,
-                onChanged: _onSearchChanged,
-                textInputAction:
-                    TextInputAction.search,
+                onSubmitted: _submitSearch,
+                textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
-                  hintText:
-                      'Search for your delivery location',
-                  prefixIcon:
-                      const Icon(Icons.search),
-                  suffixIcon:
-                      state.isSearching
-                          ? const Padding(
-                              padding:
-                                  EdgeInsets.all(14),
-                              child:
-                                  SizedBox(
-                                width: 18,
-                                height: 18,
-                                child:
-                                    CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              ),
-                            )
-                          : null,
+                  hintText: 'Enter a location and press Search',
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: state.isSearching
+                      ? const Padding(
+                          padding: EdgeInsets.all(14),
+                          child: SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        )
+                      : null,
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(14),
                     borderSide: BorderSide.none,
                   ),
                 ),
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                'Press Search on your keyboard to find matching places.',
+                style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
               ),
 
               if (state.searchResults.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Expanded(
                   child: ListView.separated(
-                    itemCount:
-                        state.searchResults.length,
-                    separatorBuilder:
-                        (_, __) =>
-                            const Divider(height: 1),
-                    itemBuilder:
-                        (context, index) {
-                      final result =
-                          state.searchResults[index];
+                    itemCount: state.searchResults.length,
+                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    itemBuilder: (context, index) {
+                      final result = state.searchResults[index];
 
                       return ListTile(
-                        contentPadding:
-                            const EdgeInsets.symmetric(
+                        contentPadding: const EdgeInsets.symmetric(
                           horizontal: 4,
                         ),
                         leading: const CircleAvatar(
-                          backgroundColor:
-                              Color(0xFFEAF7EE),
+                          backgroundColor: Color(0xFFEAF7EE),
                           child: Icon(
                             Icons.location_on,
-                            color:
-                                AppColors.primary,
+                            color: AppColors.primary,
                           ),
                         ),
                         title: Text(
                           result.displayName,
                           maxLines: 3,
-                          overflow:
-                              TextOverflow.ellipsis,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        onTap: () =>
-                            _selectResult(result),
+                        onTap: () => _selectResult(result),
                       );
                     },
                   ),
@@ -215,30 +175,15 @@ class _LocationScreenState
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
-                    onPressed:
-                        state.isLoading
-                            ? null
-                            : _useCurrentLocation,
-                    icon: const Icon(
-                      Icons.my_location,
-                    ),
-                    label: const Text(
-                      'Use my current location',
-                    ),
+                    onPressed: state.isLoading ? null : _useCurrentLocation,
+                    icon: const Icon(Icons.my_location),
+                    label: const Text('Use my current location'),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor:
-                          AppColors.primary,
-                      side: const BorderSide(
-                        color: AppColors.primary,
-                      ),
-                      padding:
-                          const EdgeInsets.symmetric(
-                        vertical: 16,
-                      ),
-                      shape:
-                          RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(14),
+                      foregroundColor: AppColors.primary,
+                      side: const BorderSide(color: AppColors.primary),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
                       ),
                     ),
                   ),
@@ -247,24 +192,16 @@ class _LocationScreenState
                 const SizedBox(height: 24),
 
                 if (state.isLoading)
-                  const Center(
-                    child:
-                        CircularProgressIndicator(),
-                  ),
+                  const Center(child: CircularProgressIndicator()),
 
                 if (state.error != null) ...[
                   const SizedBox(height: 16),
-                  _ErrorCard(
-                    message: state.error!,
-                  ),
+                  _ErrorCard(message: state.error!),
                 ],
 
-                if (state.selectedStore != null &&
-                    !state.isLoading) ...[
+                if (state.selectedStore != null && !state.isLoading) ...[
                   const SizedBox(height: 16),
-                  _StoreAvailabilityCard(
-                    state: state,
-                  ),
+                  _StoreAvailabilityCard(state: state),
                 ],
               ],
             ],
@@ -276,9 +213,7 @@ class _LocationScreenState
 }
 
 class _ErrorCard extends StatelessWidget {
-  const _ErrorCard({
-    required this.message,
-  });
+  const _ErrorCard({required this.message});
 
   final String message;
 
@@ -292,21 +227,14 @@ class _ErrorCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
-            Icons.info_outline,
-            color: Colors.red,
-          ),
+          const Icon(Icons.info_outline, color: Colors.red),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               message,
-              style: const TextStyle(
-                color: Colors.red,
-                height: 1.4,
-              ),
+              style: const TextStyle(color: Colors.red, height: 1.4),
             ),
           ),
         ],
@@ -315,11 +243,8 @@ class _ErrorCard extends StatelessWidget {
   }
 }
 
-class _StoreAvailabilityCard
-    extends StatelessWidget {
-  const _StoreAvailabilityCard({
-    required this.state,
-  });
+class _StoreAvailabilityCard extends StatelessWidget {
+  const _StoreAvailabilityCard({required this.state});
 
   final LocationState state;
 
@@ -331,8 +256,7 @@ class _StoreAvailabilityCard
       return const SizedBox.shrink();
     }
 
-    final distance =
-        state.distanceKm?.toStringAsFixed(1) ?? '-';
+    final distance = state.distanceKm?.toStringAsFixed(1) ?? '-';
 
     if (!state.isDeliverable) {
       return _ErrorCard(
@@ -350,15 +274,11 @@ class _StoreAvailabilityCard
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Row(
             children: [
-              Icon(
-                Icons.check_circle,
-                color: AppColors.primary,
-              ),
+              Icon(Icons.check_circle, color: AppColors.primary),
               SizedBox(width: 8),
               Text(
                 'Delivery available',
@@ -372,24 +292,17 @@ class _StoreAvailabilityCard
           const SizedBox(height: 10),
           Text(
             store.name,
-            style: const TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w700,
-            ),
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 4),
           Text(
             store.address,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-            ),
+            style: const TextStyle(color: AppColors.textSecondary),
           ),
           const SizedBox(height: 4),
           Text(
             '$distance km from selected location',
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-            ),
+            style: const TextStyle(color: AppColors.textSecondary),
           ),
         ],
       ),

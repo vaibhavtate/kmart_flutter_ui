@@ -8,10 +8,7 @@ import '../../providers/product_provider.dart';
 import 'product_details_screen.dart';
 
 class ProductListingScreen extends ConsumerWidget {
-  const ProductListingScreen({
-    super.key,
-    this.title = 'All Products',
-  });
+  const ProductListingScreen({super.key, this.title = 'All Products'});
 
   final String title;
 
@@ -26,10 +23,7 @@ class ProductListingScreen extends ConsumerWidget {
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new,
-            size: 20,
-          ),
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           color: AppColors.textPrimary,
           onPressed: () {
             Navigator.of(context).pop();
@@ -46,9 +40,7 @@ class ProductListingScreen extends ConsumerWidget {
       ),
       body: productsAsync.when(
         loading: () => const Center(
-          child: CircularProgressIndicator(
-            color: AppColors.primary,
-          ),
+          child: CircularProgressIndicator(color: AppColors.primary),
         ),
         error: (error, stack) => _ProductListingError(
           error: error,
@@ -66,20 +58,12 @@ class ProductListingScreen extends ConsumerWidget {
             onRefresh: () async {
               ref.invalidate(homeProductsProvider);
 
-              await ref.read(
-                homeProductsProvider.future,
-              );
+              await ref.read(homeProductsProvider.future);
             },
             child: GridView.builder(
-              padding: const EdgeInsets.fromLTRB(
-                14,
-                14,
-                14,
-                30,
-              ),
+              padding: const EdgeInsets.fromLTRB(14, 14, 14, 30),
               physics: const AlwaysScrollableScrollPhysics(),
-              gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
@@ -94,9 +78,7 @@ class ProductListingScreen extends ConsumerWidget {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) => ProductDetailsScreen(
-                          product: product,
-                        ),
+                        builder: (_) => ProductDetailsScreen(product: product),
                       ),
                     );
                   },
@@ -126,8 +108,7 @@ class ProductListingCard extends StatelessWidget {
 
     final stock = product.stockQuantity;
 
-    final bool hasStock =
-        stock == null || stock > 0;
+    final bool hasStock = stock == null || stock > 0;
 
     return GestureDetector(
       onTap: onTap,
@@ -136,9 +117,7 @@ class ProductListingCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: AppColors.border,
-          ),
+          border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: .035),
@@ -160,8 +139,7 @@ class ProductListingCard extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.primary,
-                      borderRadius:
-                          BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                     child: Text(
                       '$discount% OFF',
@@ -181,8 +159,7 @@ class ProductListingCard extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: const Color(0xFFFEE2E2),
-                      borderRadius:
-                          BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                     child: const Text(
                       'OUT OF STOCK',
@@ -198,13 +175,10 @@ class ProductListingCard extends StatelessWidget {
             const SizedBox(height: 6),
             Expanded(
               child: ClipRRect(
-                borderRadius:
-                    BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(11),
                 child: SizedBox(
                   width: double.infinity,
-                  child: _ProductImage(
-                    imageUrl: product.imageUrl,
-                  ),
+                  child: _ProductImage(imageUrl: product.imageUrl),
                 ),
               ),
             ),
@@ -234,8 +208,7 @@ class ProductListingCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Row(
-              crossAxisAlignment:
-                  CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
                   '\u20B9${product.sellingPrice.toStringAsFixed(0)}',
@@ -252,8 +225,7 @@ class ProductListingCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 9,
                       color: Color(0xFF9CA3AF),
-                      decoration:
-                          TextDecoration.lineThrough,
+                      decoration: TextDecoration.lineThrough,
                     ),
                   ),
                 ],
@@ -279,14 +251,10 @@ class ProductListingCard extends StatelessWidget {
               width: double.infinity,
               height: 30,
               child: OutlinedButton(
-                onPressed: hasStock
-                    ? onTap
-                    : null,
+                onPressed: hasStock ? onTap : null,
                 style: OutlinedButton.styleFrom(
-                  foregroundColor:
-                      AppColors.primary,
-                  disabledForegroundColor:
-                      const Color(0xFF9CA3AF),
+                  foregroundColor: AppColors.primary,
+                  disabledForegroundColor: const Color(0xFF9CA3AF),
                   side: BorderSide(
                     color: hasStock
                         ? AppColors.primary
@@ -294,14 +262,11 @@ class ProductListingCard extends StatelessWidget {
                   ),
                   padding: EdgeInsets.zero,
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(7),
+                    borderRadius: BorderRadius.circular(7),
                   ),
                 ),
                 child: Text(
-                  hasStock
-                      ? 'VIEW PRODUCT'
-                      : 'OUT OF STOCK',
+                  hasStock ? 'VIEW PRODUCT' : 'OUT OF STOCK',
                   style: const TextStyle(
                     fontSize: 9.5,
                     fontWeight: FontWeight.w900,
@@ -317,16 +282,13 @@ class ProductListingCard extends StatelessWidget {
 }
 
 class _ProductImage extends StatelessWidget {
-  const _ProductImage({
-    required this.imageUrl,
-  });
+  const _ProductImage({required this.imageUrl});
 
   final String? imageUrl;
 
   @override
   Widget build(BuildContext context) {
-    if (imageUrl == null ||
-        imageUrl!.trim().isEmpty) {
+    if (imageUrl == null || imageUrl!.trim().isEmpty) {
       return Container(
         color: AppColors.background,
         alignment: Alignment.center,
@@ -368,8 +330,7 @@ class _ProductImage extends StatelessWidget {
   }
 }
 
-class _ProductListingEmpty
-    extends StatelessWidget {
+class _ProductListingEmpty extends StatelessWidget {
   const _ProductListingEmpty();
 
   @override
@@ -384,8 +345,7 @@ class _ProductListingEmpty
               width: 82,
               height: 82,
               decoration: BoxDecoration(
-                color: AppColors.primary
-                    .withValues(alpha: .08),
+                color: AppColors.primary.withValues(alpha: .08),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -420,12 +380,8 @@ class _ProductListingEmpty
   }
 }
 
-class _ProductListingError
-    extends StatelessWidget {
-  const _ProductListingError({
-    required this.error,
-    required this.onRetry,
-  });
+class _ProductListingError extends StatelessWidget {
+  const _ProductListingError({required this.error, required this.onRetry});
 
   final Object error;
   final VoidCallback onRetry;
@@ -438,11 +394,7 @@ class _ProductListingError
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.cloud_off_outlined,
-              size: 46,
-              color: Colors.red,
-            ),
+            const Icon(Icons.cloud_off_outlined, size: 46, color: Colors.red),
             const SizedBox(height: 14),
             const Text(
               'Unable to load products',
@@ -464,9 +416,7 @@ class _ProductListingError
             const SizedBox(height: 18),
             FilledButton(
               onPressed: onRetry,
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-              ),
+              style: FilledButton.styleFrom(backgroundColor: AppColors.primary),
               child: const Text('Try Again'),
             ),
           ],

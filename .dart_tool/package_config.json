@@ -3,15 +3,15 @@
   "packages": [
     {
       "name": "app_links",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/app_links-7.2.1",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/app_links-7.2.2",
       "packageUri": "lib/",
       "languageVersion": "3.12"
     },
     {
       "name": "app_links_linux",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/app_links_linux-1.0.3",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/app_links_linux-1.0.4",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.12"
     },
     {
       "name": "app_links_platform_interface",
@@ -21,9 +21,9 @@
     },
     {
       "name": "app_links_web",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/app_links_web-1.0.4",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/app_links_web-1.0.5",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.12"
     },
     {
       "name": "args",
@@ -75,7 +75,7 @@
     },
     {
       "name": "code_assets",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/code_assets-2.1.0",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/code_assets-1.2.1",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -99,7 +99,7 @@
     },
     {
       "name": "cupertino_ui",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/cupertino_ui-1.1.1",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/cupertino_ui-1.1.2",
       "packageUri": "lib/",
       "languageVersion": "3.13"
     },
@@ -284,14 +284,8 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "gtk",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/gtk-2.2.0",
-      "packageUri": "lib/",
-      "languageVersion": "3.0"
-    },
-    {
       "name": "hooks",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/hooks-2.2.0",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/hooks-2.0.2",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -387,13 +381,13 @@
     },
     {
       "name": "material_ui",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/material_ui-1.5.0",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/material_ui-1.6.0",
       "packageUri": "lib/",
       "languageVersion": "3.13"
     },
     {
       "name": "meta",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.19.0",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.18.3",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
@@ -405,7 +399,7 @@
     },
     {
       "name": "objective_c",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/objective_c-9.6.2",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/objective_c-9.5.0",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -489,9 +483,9 @@
     },
     {
       "name": "petitparser",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/petitparser-7.1.0",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/petitparser-7.0.2",
       "packageUri": "lib/",
-      "languageVersion": "3.13"
+      "languageVersion": "3.8"
     },
     {
       "name": "platform",
@@ -531,7 +525,7 @@
     },
     {
       "name": "record_use",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/record_use-1.1.1",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/record_use-0.6.0",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -777,7 +771,7 @@
     },
     {
       "name": "vector_math",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/vector_math-2.4.3",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/vector_math-2.4.0",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -839,7 +833,7 @@
       "name": "kmart_flutter_ui",
       "rootUri": "../",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.13"
     }
   ],
   "generator": "pub",

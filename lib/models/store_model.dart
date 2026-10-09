@@ -37,14 +37,11 @@ class StoreModel {
       latitude: number(map['latitude']),
       longitude: number(map['longitude']),
       serviceRadiusKm: number(map['service_radius_km']),
-      gofrugalAccountId:
-          (map['gofrugal_account_id'] ?? '').toString(),
+      gofrugalAccountId: (map['gofrugal_account_id'] ?? '').toString(),
       active: map['active'] == true,
       createdAt: map['created_at'] == null
           ? null
-          : DateTime.tryParse(
-              map['created_at'].toString(),
-            ),
+          : DateTime.tryParse(map['created_at'].toString()),
     );
   }
 }

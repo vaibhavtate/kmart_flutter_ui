@@ -1,4 +1,3 @@
-
 class ProductModel {
   const ProductModel({
     required this.id,

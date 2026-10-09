@@ -3,9 +3,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/store_model.dart';
 
 class StoreRepository {
-  StoreRepository({
-    SupabaseClient? client,
-  }) : _client = client ?? Supabase.instance.client;
+  StoreRepository({SupabaseClient? client})
+    : _client = client ?? Supabase.instance.client;
 
   final SupabaseClient _client;
 
@@ -21,9 +20,7 @@ class StoreRepository {
 
     return (response as List)
         .map(
-          (item) => StoreModel.fromMap(
-            Map<String, dynamic>.from(item as Map),
-          ),
+          (item) => StoreModel.fromMap(Map<String, dynamic>.from(item as Map)),
         )
         .toList();
   }
@@ -33,16 +30,11 @@ class StoreRepository {
   /// Distance/radius calculation is intentionally handled by
   /// LocationService, not by the database.
   Future<List<StoreModel>> getStores() async {
-    final response = await _client
-        .from('stores')
-        .select()
-        .order('name');
+    final response = await _client.from('stores').select().order('name');
 
     return (response as List)
         .map(
-          (item) => StoreModel.fromMap(
-            Map<String, dynamic>.from(item as Map),
-          ),
+          (item) => StoreModel.fromMap(Map<String, dynamic>.from(item as Map)),
         )
         .toList();
   }

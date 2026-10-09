@@ -1,26 +1,19 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthRepository {
-  AuthRepository({
-    SupabaseClient? client,
-  }) : _client = client ?? Supabase.instance.client;
+  AuthRepository({SupabaseClient? client})
+    : _client = client ?? Supabase.instance.client;
 
   final SupabaseClient _client;
 
   User? get currentUser => _client.auth.currentUser;
 
-  Session? get currentSession =>
-      _client.auth.currentSession;
+  Session? get currentSession => _client.auth.currentSession;
 
-  Stream<AuthState> get authStateChanges =>
-      _client.auth.onAuthStateChange;
+  Stream<AuthState> get authStateChanges => _client.auth.onAuthStateChange;
 
-  Future<void> sendOtp({
-    required String phone,
-  }) async {
-    await _client.auth.signInWithOtp(
-      phone: phone,
-    );
+  Future<void> sendOtp({required String phone}) async {
+    await _client.auth.signInWithOtp(phone: phone);
   }
 
   Future<AuthResponse> verifyOtp({

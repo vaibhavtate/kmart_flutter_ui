@@ -8,10 +8,7 @@ import '../../providers/cart_provider.dart';
 import '../cart/cart_screen.dart';
 
 class ProductDetailsScreen extends ConsumerStatefulWidget {
-  const ProductDetailsScreen({
-    super.key,
-    required this.product,
-  });
+  const ProductDetailsScreen({super.key, required this.product});
 
   final ProductModel product;
 
@@ -20,23 +17,20 @@ class ProductDetailsScreen extends ConsumerStatefulWidget {
       _ProductDetailsScreenState();
 }
 
-class _ProductDetailsScreenState
-    extends ConsumerState<ProductDetailsScreen> {
+class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
   int _quantity = 1;
 
   ProductModel get product => widget.product;
 
   bool get hasStock =>
-      product.stockQuantity == null ||
-      product.stockQuantity! > 0;
+      product.stockQuantity == null || product.stockQuantity! > 0;
 
   bool get isLowStock =>
       product.stockQuantity != null &&
       product.stockQuantity! > 0 &&
       product.stockQuantity! <= 5;
 
-  double get totalPrice =>
-      product.sellingPrice * _quantity;
+  double get totalPrice => product.sellingPrice * _quantity;
 
   void _increaseQuantity() {
     if (!hasStock) return;
@@ -65,28 +59,20 @@ class _ProductDetailsScreenState
 
     final success = await ref
         .read(cartProvider)
-        .addToCart(
-          productId: product.id,
-          quantity: _quantity,
-        );
+        .addToCart(productId: product.id, quantity: _quantity);
 
     if (!mounted) return;
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            '${product.name} added to cart.',
-          ),
+          content: Text('${product.name} added to cart.'),
           duration: const Duration(seconds: 2),
           action: SnackBarAction(
             label: 'VIEW CART',
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const CartScreen(),
-                ),
-              );
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => const CartScreen()));
             },
           ),
         ),
@@ -96,10 +82,7 @@ class _ProductDetailsScreenState
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            error?.toString() ??
-                'Unable to add product to cart.',
-          ),
+          content: Text(error?.toString() ?? 'Unable to add product to cart.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -119,10 +102,7 @@ class _ProductDetailsScreenState
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new,
-            size: 20,
-          ),
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           color: AppColors.textPrimary,
           onPressed: () {
             Navigator.of(context).pop();
@@ -142,15 +122,11 @@ class _ProductDetailsScreenState
             children: [
               IconButton(
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const CartScreen(),
-                    ),
-                  );
+                  Navigator.of(
+                    context,
+                  ).push(MaterialPageRoute(builder: (_) => const CartScreen()));
                 },
-                icon: const Icon(
-                  Icons.shopping_cart_outlined,
-                ),
+                icon: const Icon(Icons.shopping_cart_outlined),
                 color: AppColors.textPrimary,
               ),
               if (cartController.itemCount > 0)
@@ -187,9 +163,7 @@ class _ProductDetailsScreenState
           ),
           IconButton(
             onPressed: () {},
-            icon: const Icon(
-              Icons.favorite_border,
-            ),
+            icon: const Icon(Icons.favorite_border),
             color: AppColors.textPrimary,
           ),
         ],
@@ -199,12 +173,7 @@ class _ProductDetailsScreenState
           Expanded(
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(
-                14,
-                14,
-                14,
-                24,
-              ),
+              padding: const EdgeInsets.fromLTRB(14, 14, 14, 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -236,18 +205,14 @@ class _ProductDetailsScreenState
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: AppColors.border,
-        ),
+        border: Border.all(color: AppColors.border),
       ),
       child: Stack(
         children: [
           Positioned.fill(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(18),
-              child: _ProductImage(
-                imageUrl: product.imageUrl,
-              ),
+              child: _ProductImage(imageUrl: product.imageUrl),
             ),
           ),
           if (product.hasDiscount)
@@ -255,10 +220,7 @@ class _ProductDetailsScreenState
               top: 14,
               left: 14,
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 5,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(7),
@@ -278,10 +240,7 @@ class _ProductDetailsScreenState
               top: 14,
               right: 14,
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 5,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                 decoration: BoxDecoration(
                   color: const Color(0xFFFEE2E2),
                   borderRadius: BorderRadius.circular(7),
@@ -337,9 +296,7 @@ class _ProductDetailsScreenState
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(
-          color: AppColors.border,
-        ),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -369,14 +326,9 @@ class _ProductDetailsScreenState
           const Spacer(),
           if (product.hasDiscount)
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 7,
-                vertical: 5,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
               decoration: BoxDecoration(
-                color: AppColors.primary.withValues(
-                  alpha: .09,
-                ),
+                color: AppColors.primary.withValues(alpha: .09),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
@@ -409,8 +361,7 @@ class _ProductDetailsScreenState
         icon: Icons.warning_amber_rounded,
         color: const Color(0xFFD97706),
         background: const Color(0xFFFEF3C7),
-        title:
-            'Only ${product.stockQuantity!.toStringAsFixed(0)} left',
+        title: 'Only ${product.stockQuantity!.toStringAsFixed(0)} left',
         subtitle: 'Order soon before it sells out.',
       );
     }
@@ -455,10 +406,7 @@ class _ProductDetailsScreenState
               SizedBox(height: 3),
               Text(
                 'Select quantity',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: AppColors.textSecondary,
-                ),
+                style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
               ),
             ],
           ),
@@ -468,22 +416,16 @@ class _ProductDetailsScreenState
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(11),
-            border: Border.all(
-              color: AppColors.border,
-            ),
+            border: Border.all(color: AppColors.border),
           ),
           child: Row(
             children: [
               IconButton(
-                onPressed: hasStock &&
-                        _quantity > 1 &&
-                        !cartController.isUpdating
+                onPressed:
+                    hasStock && _quantity > 1 && !cartController.isUpdating
                     ? _decreaseQuantity
                     : null,
-                icon: const Icon(
-                  Icons.remove,
-                  size: 18,
-                ),
+                icon: const Icon(Icons.remove, size: 18),
                 color: AppColors.primary,
               ),
               SizedBox(
@@ -498,14 +440,10 @@ class _ProductDetailsScreenState
                 ),
               ),
               IconButton(
-                onPressed: hasStock &&
-                        !cartController.isUpdating
+                onPressed: hasStock && !cartController.isUpdating
                     ? _increaseQuantity
                     : null,
-                icon: const Icon(
-                  Icons.add,
-                  size: 18,
-                ),
+                icon: const Icon(Icons.add, size: 18),
                 color: AppColors.primary,
               ),
             ],
@@ -522,9 +460,7 @@ class _ProductDetailsScreenState
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(
-          color: AppColors.border,
-        ),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -538,28 +474,22 @@ class _ProductDetailsScreenState
             ),
           ),
           const SizedBox(height: 14),
-          _InfoRow(
-            label: 'Product',
-            value: product.name,
-          ),
+          _InfoRow(label: 'Product', value: product.name),
           const SizedBox(height: 10),
           _InfoRow(
             label: 'MRP',
-            value:
-                '\u20B9${product.mrp.toStringAsFixed(0)}',
+            value: '\u20B9${product.mrp.toStringAsFixed(0)}',
           ),
           const SizedBox(height: 10),
           _InfoRow(
             label: 'Selling Price',
-            value:
-                '\u20B9${product.sellingPrice.toStringAsFixed(0)}',
+            value: '\u20B9${product.sellingPrice.toStringAsFixed(0)}',
           ),
           if (product.taxPercent != null) ...[
             const SizedBox(height: 10),
             _InfoRow(
               label: 'Tax',
-              value:
-                  '${product.taxPercent!.toStringAsFixed(2)}%',
+              value: '${product.taxPercent!.toStringAsFixed(2)}%',
             ),
           ],
         ],
@@ -571,19 +501,10 @@ class _ProductDetailsScreenState
     final cartController = ref.watch(cartProvider);
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(
-        14,
-        10,
-        14,
-        12,
-      ),
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(
-          top: BorderSide(
-            color: AppColors.border,
-          ),
-        ),
+        border: Border(top: BorderSide(color: AppColors.border)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: .06),
@@ -626,17 +547,14 @@ class _ProductDetailsScreenState
               child: SizedBox(
                 height: 48,
                 child: FilledButton.icon(
-                  onPressed: hasStock &&
-                          !cartController.isUpdating
+                  onPressed: hasStock && !cartController.isUpdating
                       ? _addToCart
                       : null,
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    disabledBackgroundColor:
-                        const Color(0xFFE5E7EB),
+                    disabledBackgroundColor: const Color(0xFFE5E7EB),
                     foregroundColor: Colors.white,
-                    disabledForegroundColor:
-                        const Color(0xFF9CA3AF),
+                    disabledForegroundColor: const Color(0xFF9CA3AF),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(11),
                     ),
@@ -650,16 +568,13 @@ class _ProductDetailsScreenState
                             color: Colors.white,
                           ),
                         )
-                      : const Icon(
-                          Icons.shopping_cart_outlined,
-                          size: 19,
-                        ),
+                      : const Icon(Icons.shopping_cart_outlined, size: 19),
                   label: Text(
                     cartController.isUpdating
                         ? 'Adding...'
                         : hasStock
-                            ? 'Add to Cart'
-                            : 'Out of Stock',
+                        ? 'Add to Cart'
+                        : 'Out of Stock',
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w900,
@@ -680,16 +595,13 @@ class _ProductDetailsScreenState
 }
 
 class _ProductImage extends StatelessWidget {
-  const _ProductImage({
-    required this.imageUrl,
-  });
+  const _ProductImage({required this.imageUrl});
 
   final String? imageUrl;
 
   @override
   Widget build(BuildContext context) {
-    if (imageUrl == null ||
-        imageUrl!.trim().isEmpty) {
+    if (imageUrl == null || imageUrl!.trim().isEmpty) {
       return Container(
         color: AppColors.background,
         alignment: Alignment.center,
@@ -755,11 +667,7 @@ class _StockMessage extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            icon,
-            color: color,
-            size: 24,
-          ),
+          Icon(icon, color: color, size: 24),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
@@ -791,10 +699,7 @@ class _StockMessage extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({
-    required this.label,
-    required this.value,
-  });
+  const _InfoRow({required this.label, required this.value});
 
   final String label;
   final String value;

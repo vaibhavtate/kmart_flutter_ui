@@ -5,67 +5,49 @@ import '../models/product_model.dart';
 import '../repositories/product_repository.dart';
 import 'location_provider.dart';
 
-final productRepositoryProvider = Provider<ProductRepository>(
-  (ref) {
-    return ProductRepository();
-  },
-);
+final productRepositoryProvider = Provider<ProductRepository>((ref) {
+  return ProductRepository();
+});
 
-final homeCategoriesProvider =
-    FutureProvider.autoDispose<List<CategoryModel>>(
-  (ref) async {
-    final repository =
-        ref.watch(productRepositoryProvider);
+final homeCategoriesProvider = FutureProvider.autoDispose<List<CategoryModel>>((
+  ref,
+) async {
+  final repository = ref.watch(productRepositoryProvider);
 
-    return repository.getActiveCategories();
-  },
-);
+  return repository.getActiveCategories();
+});
 
-final homeProductsProvider =
-    FutureProvider.autoDispose<List<ProductModel>>(
-  (ref) async {
-    final repository =
-        ref.watch(productRepositoryProvider);
+final homeProductsProvider = FutureProvider.autoDispose<List<ProductModel>>((
+  ref,
+) async {
+  final repository = ref.watch(productRepositoryProvider);
 
-    final locationState =
-        ref.watch(locationProvider);
+  final locationState = ref.watch(locationProvider);
 
-    final storeId =
-        locationState.selectedStore?.id;
+  final storeId = locationState.selectedStore?.id;
 
-    if (storeId == null || storeId.isEmpty) {
-      return [];
-    }
+  if (storeId == null || storeId.isEmpty || !locationState.isDeliverable) {
+    return [];
+  }
 
-    return repository.getActiveProducts(
-      limit: 24,
-      storeId: storeId,
-    );
-  },
-);
+  return repository.getActiveProducts(limit: 24, storeId: storeId);
+});
 
-final searchProductsProvider =
-    FutureProvider.autoDispose.family<
-        List<ProductModel>,
-        String>(
-  (ref, query) async {
-    final repository =
-        ref.watch(productRepositoryProvider);
+final searchProductsProvider = FutureProvider.autoDispose
+    .family<List<ProductModel>, String>((ref, query) async {
+      final repository = ref.watch(productRepositoryProvider);
 
-    final locationState =
-        ref.watch(locationProvider);
+      final locationState = ref.watch(locationProvider);
 
-    final storeId =
-        locationState.selectedStore?.id;
+      final storeId = locationState.selectedStore?.id;
 
-    if (storeId == null || storeId.isEmpty) {
-      return [];
-    }
+      if (storeId == null || storeId.isEmpty || !locationState.isDeliverable) {
+        return [];
+      }
 
-    return repository.searchProducts(
-      query: query,
-      storeId: storeId,
-      limit: 30,
-    );
-  },
-);
+      return repository.searchProducts(
+        query: query,
+        storeId: storeId,
+        limit: 30,
+      );
+    });

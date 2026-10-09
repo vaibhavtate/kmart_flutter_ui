@@ -28,9 +28,16 @@ class NearestStoreResult {
 }
 
 class LocationService {
-  LocationService({
-    Dio? dio,
-  }) : _dio = dio ?? Dio();
+  LocationService({Dio? dio})
+    : _dio =
+          dio ??
+          Dio(
+            BaseOptions(
+              connectTimeout: const Duration(seconds: 10),
+              receiveTimeout: const Duration(seconds: 15),
+              sendTimeout: const Duration(seconds: 10),
+            ),
+          );
 
   final Dio _dio;
 
@@ -38,8 +45,7 @@ class LocationService {
       'https://nominatim.openstreetmap.org/search';
 
   Future<Position> getCurrentPosition() async {
-    final serviceEnabled =
-        await Geolocator.isLocationServiceEnabled();
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
     if (!serviceEnabled) {
       throw Exception(
@@ -54,9 +60,7 @@ class LocationService {
     }
 
     if (permission == LocationPermission.denied) {
-      throw Exception(
-        'Location permission was denied.',
-      );
+      throw Exception('Location permission was denied.');
     }
 
     if (permission == LocationPermission.deniedForever) {
@@ -68,13 +72,12 @@ class LocationService {
     return Geolocator.getCurrentPosition(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
+        timeLimit: Duration(seconds: 15),
       ),
     );
   }
 
-  Future<List<LocationSearchResult>> searchLocation(
-    String query,
-  ) async {
+  Future<List<LocationSearchResult>> searchLocation(String query) async {
     final trimmedQuery = query.trim();
 
     if (trimmedQuery.length < 3) {
@@ -90,11 +93,7 @@ class LocationService {
         'limit': 8,
         'countrycodes': 'in',
       },
-      options: Options(
-        headers: {
-          'User-Agent': 'KMart Flutter App',
-        },
-      ),
+      options: Options(headers: {'User-Agent': 'KMart Flutter App'}),
     );
 
     final data = response.data;
@@ -106,22 +105,17 @@ class LocationService {
     return data
         .whereType<Map>()
         .map((item) {
-          final latitude = double.tryParse(
-            item['lat']?.toString() ?? '',
-          );
+          final latitude = double.tryParse(item['lat']?.toString() ?? '');
 
-          final longitude = double.tryParse(
-            item['lon']?.toString() ?? '',
-          );
+          final longitude = double.tryParse(item['lon']?.toString() ?? '');
 
           if (latitude == null || longitude == null) {
             return null;
           }
 
           return LocationSearchResult(
-            displayName:
-                (item['display_name'] ?? 'Selected location')
-                    .toString(),
+            displayName: (item['display_name'] ?? 'Selected location')
+                .toString(),
             latitude: latitude,
             longitude: longitude,
           );
@@ -152,23 +146,20 @@ class LocationService {
 
       final distanceKm = distanceMeters / 1000;
 
-      if (nearestDistanceKm == null ||
-          distanceKm < nearestDistanceKm) {
+      if (nearestDistanceKm == null || distanceKm < nearestDistanceKm) {
         nearestStore = store;
         nearestDistanceKm = distanceKm;
       }
     }
 
-    if (nearestStore == null ||
-        nearestDistanceKm == null) {
+    if (nearestStore == null || nearestDistanceKm == null) {
       return null;
     }
 
     return NearestStoreResult(
       store: nearestStore,
       distanceKm: nearestDistanceKm,
-      isDeliverable:
-          nearestDistanceKm <= nearestStore.serviceRadiusKm,
+      isDeliverable: nearestDistanceKm <= nearestStore.serviceRadiusKm,
     );
   }
 }

@@ -2,39 +2,49 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
+import 'dart:async';
+
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 import '../models/cart_model.dart';
 import '../repositories/cart_repository.dart';
 import '../services/cart_service.dart';
 
-final cartRepositoryProvider =
-    Provider<CartRepository>((ref) {
+final cartRepositoryProvider = Provider<CartRepository>((ref) {
   return CartRepository();
 });
 
-final cartServiceProvider =
-    Provider<CartService>((ref) {
-  return CartService(
-    repository: ref.watch(
-      cartRepositoryProvider,
-    ),
-  );
+final cartServiceProvider = Provider<CartService>((ref) {
+  return CartService(repository: ref.watch(cartRepositoryProvider));
 });
 
-final cartProvider =
-    ChangeNotifierProvider<CartController>((ref) {
-  return CartController(
-    service: ref.watch(
-      cartServiceProvider,
-    ),
-  );
+final cartProvider = ChangeNotifierProvider<CartController>((ref) {
+  return CartController(service: ref.watch(cartServiceProvider));
 });
 
 class CartController extends ChangeNotifier {
-  CartController({
-    required CartService service,
-  }) : _service = service;
+  CartController({required this._service}) {
+    _activeUserId = Supabase.instance.client.auth.currentUser?.id;
+    _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((
+      event,
+    ) {
+      final nextUserId = event.session?.user.id;
+      if (nextUserId == _activeUserId) return;
+      _activeUserId = nextUserId;
+      _cart = null;
+      _error = null;
+      _isLoading = false;
+      _isUpdating = false;
+      notifyListeners();
+      if (nextUserId != null) {
+        loadCart();
+      }
+    });
+  }
 
   final CartService _service;
+  late final StreamSubscription<AuthState> _authSubscription;
+  String? _activeUserId;
 
   CartModel? _cart;
 
@@ -59,8 +69,7 @@ class CartController extends ChangeNotifier {
 
   double get totalSavings => _cart?.totalSavings ?? 0;
 
-  bool get isEmpty =>
-      _cart == null || _cart!.items.isEmpty;
+  bool get isEmpty => _cart == null || _cart!.items.isEmpty;
 
   Future<void> loadCart() async {
     _isLoading = true;
@@ -92,10 +101,7 @@ class CartController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _service.addToCart(
-        productId: productId,
-        quantity: quantity,
-      );
+      await _service.addToCart(productId: productId, quantity: quantity);
 
       _cart = await _service.getCart();
 
@@ -119,10 +125,7 @@ class CartController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _service.updateQuantity(
-        cartItemId: cartItemId,
-        quantity: quantity,
-      );
+      await _service.updateQuantity(cartItemId: cartItemId, quantity: quantity);
 
       _cart = await _service.getCart();
 
@@ -136,18 +139,14 @@ class CartController extends ChangeNotifier {
     }
   }
 
-  Future<bool> removeItem(
-    String cartItemId,
-  ) async {
+  Future<bool> removeItem(String cartItemId) async {
     _isUpdating = true;
     _error = null;
 
     notifyListeners();
 
     try {
-      await _service.removeItem(
-        cartItemId,
-      );
+      await _service.removeItem(cartItemId);
 
       _cart = await _service.getCart();
 
@@ -185,5 +184,11 @@ class CartController extends ChangeNotifier {
   void clearError() {
     _error = null;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _authSubscription.cancel();
+    super.dispose();
   }
 }

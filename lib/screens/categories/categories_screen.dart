@@ -69,9 +69,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
             _buildSearch(),
             Expanded(
               child: categoriesAsync.when(
-                loading: () => const Center(
-                  child: CircularProgressIndicator(),
-                ),
+                loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stack) => _buildError(error),
                 data: (categories) {
                   final filtered = _filterCategories(categories);
@@ -86,20 +84,15 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
                       await ref.read(homeCategoriesProvider.future);
                     },
                     child: GridView.builder(
-                      padding: const EdgeInsets.fromLTRB(
-                        16,
-                        8,
-                        16,
-                        100,
-                      ),
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
                       physics: const AlwaysScrollableScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.95,
-                      ),
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 0.95,
+                          ),
                       itemCount: filtered.length,
                       itemBuilder: (context, index) {
                         return _CategoryCard(
@@ -145,16 +138,11 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(
-              color: AppColors.border,
-            ),
+            borderSide: const BorderSide(color: AppColors.border),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(
-              color: AppColors.primary,
-              width: 1.2,
-            ),
+            borderSide: const BorderSide(color: AppColors.primary, width: 1.2),
           ),
         ),
       ),
@@ -168,11 +156,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.error_outline,
-              size: 48,
-              color: Colors.red,
-            ),
+            const Icon(Icons.error_outline, size: 48, color: Colors.red),
             const SizedBox(height: 16),
             const Text(
               'Unable to load categories',
@@ -230,9 +214,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
             Text(
               'Categories will appear here when they are available.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: AppColors.textSecondary,
-              ),
+              style: TextStyle(color: AppColors.textSecondary),
             ),
           ],
         ),
@@ -251,10 +233,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
 }
 
 class _CategoryCard extends StatelessWidget {
-  const _CategoryCard({
-    required this.category,
-    required this.onTap,
-  });
+  const _CategoryCard({required this.category, required this.onTap});
 
   final CategoryModel category;
   final VoidCallback onTap;
@@ -270,9 +249,7 @@ class _CategoryCard extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: AppColors.border,
-            ),
+            border: Border.all(color: AppColors.border),
           ),
           padding: const EdgeInsets.all(12),
           child: Column(
@@ -281,9 +258,7 @@ class _CategoryCard extends StatelessWidget {
               Expanded(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(14),
-                  child: _CategoryImage(
-                    imageUrl: category.imageUrl,
-                  ),
+                  child: _CategoryImage(imageUrl: category.imageUrl),
                 ),
               ),
               const SizedBox(height: 10),
@@ -307,9 +282,7 @@ class _CategoryCard extends StatelessWidget {
 }
 
 class _CategoryImage extends StatelessWidget {
-  const _CategoryImage({
-    required this.imageUrl,
-  });
+  const _CategoryImage({required this.imageUrl});
 
   final String? imageUrl;
 
@@ -352,9 +325,7 @@ class _CategoryImage extends StatelessWidget {
           child: SizedBox(
             width: 24,
             height: 24,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-            ),
+            child: CircularProgressIndicator(strokeWidth: 2),
           ),
         );
       },

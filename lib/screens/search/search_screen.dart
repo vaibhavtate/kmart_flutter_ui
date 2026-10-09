@@ -6,10 +6,7 @@ import '../../models/product_model.dart';
 import '../../providers/product_provider.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
-  const SearchScreen({
-    super.key,
-    this.initialQuery = '',
-  });
+  const SearchScreen({super.key, this.initialQuery = ''});
 
   final String initialQuery;
 
@@ -26,9 +23,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   void initState() {
     super.initState();
 
-    _controller = TextEditingController(
-      text: widget.initialQuery,
-    );
+    _controller = TextEditingController(text: widget.initialQuery);
 
     _query = widget.initialQuery.trim();
   }
@@ -66,10 +61,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new,
-            size: 20,
-          ),
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           color: AppColors.textPrimary,
           onPressed: () {
             Navigator.of(context).pop();
@@ -87,9 +79,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       body: Column(
         children: [
           _buildSearchField(),
-          Expanded(
-            child: _buildResults(searchAsync),
-          ),
+          Expanded(child: _buildResults(searchAsync)),
         ],
       ),
     );
@@ -97,12 +87,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   Widget _buildSearchField() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        16,
-        12,
-        16,
-        12,
-      ),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       child: TextField(
         controller: _controller,
         autofocus: true,
@@ -115,17 +100,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             color: AppColors.textSecondary,
             fontSize: 14,
           ),
-          prefixIcon: const Icon(
-            Icons.search,
-            color: AppColors.textSecondary,
-          ),
+          prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
           suffixIcon: _query.isNotEmpty
               ? IconButton(
                   onPressed: _clearSearch,
-                  icon: const Icon(
-                    Icons.clear,
-                    color: AppColors.textSecondary,
-                  ),
+                  icon: const Icon(Icons.clear, color: AppColors.textSecondary),
                 )
               : null,
           filled: true,
@@ -136,31 +115,22 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(
-              color: AppColors.border,
-            ),
+            borderSide: const BorderSide(color: AppColors.border),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(
-              color: AppColors.border,
-            ),
+            borderSide: const BorderSide(color: AppColors.border),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(
-              color: AppColors.primary,
-              width: 1.2,
-            ),
+            borderSide: const BorderSide(color: AppColors.primary, width: 1.2),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildResults(
-    AsyncValue<List<ProductModel>>? searchAsync,
-  ) {
+  Widget _buildResults(AsyncValue<List<ProductModel>>? searchAsync) {
     if (_query.isEmpty) {
       return const _SearchInitialState();
     }
@@ -171,16 +141,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     return searchAsync.when(
       loading: () => const Center(
-        child: CircularProgressIndicator(
-          color: AppColors.primary,
-        ),
+        child: CircularProgressIndicator(color: AppColors.primary),
       ),
       error: (error, stack) => _SearchError(
         error: error,
         onRetry: () {
-          ref.invalidate(
-            searchProductsProvider(_query),
-          );
+          ref.invalidate(searchProductsProvider(_query));
         },
       ),
       data: (products) {
@@ -191,25 +157,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         return RefreshIndicator(
           color: AppColors.primary,
           onRefresh: () async {
-            ref.invalidate(
-              searchProductsProvider(_query),
-            );
+            ref.invalidate(searchProductsProvider(_query));
 
-            await ref.read(
-              searchProductsProvider(_query).future,
-            );
+            await ref.read(searchProductsProvider(_query).future);
           },
           child: GridView.builder(
-            padding: const EdgeInsets.fromLTRB(
-              16,
-              4,
-              16,
-              30,
-            ),
-            physics:
-                const AlwaysScrollableScrollPhysics(),
-            gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 30),
+            physics: const AlwaysScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
@@ -217,9 +172,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
             itemCount: products.length,
             itemBuilder: (_, index) {
-              return _SearchProductCard(
-                product: products[index],
-              );
+              return _SearchProductCard(product: products[index]);
             },
           ),
         );
@@ -243,9 +196,7 @@ class _SearchInitialState extends StatelessWidget {
               width: 78,
               height: 78,
               decoration: BoxDecoration(
-                color: AppColors.primary.withValues(
-                  alpha: .08,
-                ),
+                color: AppColors.primary.withValues(alpha: .08),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -317,10 +268,7 @@ class _NoResults extends StatelessWidget {
             const Text(
               'Try a different product name or search term.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 13,
-              ),
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
             ),
           ],
         ),
@@ -330,10 +278,7 @@ class _NoResults extends StatelessWidget {
 }
 
 class _SearchError extends StatelessWidget {
-  const _SearchError({
-    required this.error,
-    required this.onRetry,
-  });
+  const _SearchError({required this.error, required this.onRetry});
 
   final Object error;
   final VoidCallback onRetry;
@@ -346,11 +291,7 @@ class _SearchError extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.cloud_off_outlined,
-              size: 44,
-              color: Colors.red,
-            ),
+            const Icon(Icons.cloud_off_outlined, size: 44, color: Colors.red),
             const SizedBox(height: 14),
             const Text(
               'Unable to search products',
@@ -372,9 +313,7 @@ class _SearchError extends StatelessWidget {
             const SizedBox(height: 18),
             FilledButton(
               onPressed: onRetry,
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-              ),
+              style: FilledButton.styleFrom(backgroundColor: AppColors.primary),
               child: const Text('Try Again'),
             ),
           ],
@@ -385,9 +324,7 @@ class _SearchError extends StatelessWidget {
 }
 
 class _SearchProductCard extends StatelessWidget {
-  const _SearchProductCard({
-    required this.product,
-  });
+  const _SearchProductCard({required this.product});
 
   final ProductModel product;
 
@@ -400,9 +337,7 @@ class _SearchProductCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: AppColors.border,
-        ),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -429,20 +364,14 @@ class _SearchProductCard extends StatelessWidget {
                   ),
                 ),
               const Spacer(),
-              const Icon(
-                Icons.favorite_border,
-                size: 18,
-                color: Colors.grey,
-              ),
+              const Icon(Icons.favorite_border, size: 18, color: Colors.grey),
             ],
           ),
           const SizedBox(height: 5),
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(11),
-              child: _ProductImage(
-                url: product.imageUrl,
-              ),
+              child: _ProductImage(url: product.imageUrl),
             ),
           ),
           const SizedBox(height: 7),
@@ -485,8 +414,7 @@ class _SearchProductCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 9,
                     color: Color(0xFF9CA3AF),
-                    decoration:
-                        TextDecoration.lineThrough,
+                    decoration: TextDecoration.lineThrough,
                   ),
                 ),
               ],
@@ -500,9 +428,7 @@ class _SearchProductCard extends StatelessWidget {
               onPressed: () {},
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.primary,
-                side: const BorderSide(
-                  color: AppColors.primary,
-                ),
+                side: const BorderSide(color: AppColors.primary),
                 padding: EdgeInsets.zero,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(7),
@@ -510,10 +436,7 @@ class _SearchProductCard extends StatelessWidget {
               ),
               child: const Text(
                 'ADD +',
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900),
               ),
             ),
           ),
@@ -524,9 +447,7 @@ class _SearchProductCard extends StatelessWidget {
 }
 
 class _ProductImage extends StatelessWidget {
-  const _ProductImage({
-    required this.url,
-  });
+  const _ProductImage({required this.url});
 
   final String? url;
 
@@ -549,11 +470,7 @@ class _ProductImage extends StatelessWidget {
       fit: BoxFit.cover,
       width: double.infinity,
       height: double.infinity,
-      loadingBuilder: (
-        context,
-        child,
-        loadingProgress,
-      ) {
+      loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null) {
           return child;
         }

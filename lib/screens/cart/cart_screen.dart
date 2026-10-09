@@ -7,17 +7,13 @@ import '../../models/cart_model.dart';
 import '../../providers/cart_provider.dart';
 
 class CartScreen extends ConsumerStatefulWidget {
-  const CartScreen({
-    super.key,
-  });
+  const CartScreen({super.key});
 
   @override
-  ConsumerState<CartScreen> createState() =>
-      _CartScreenState();
+  ConsumerState<CartScreen> createState() => _CartScreenState();
 }
 
-class _CartScreenState
-    extends ConsumerState<CartScreen> {
+class _CartScreenState extends ConsumerState<CartScreen> {
   @override
   void initState() {
     super.initState();
@@ -41,10 +37,7 @@ class _CartScreenState
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: const Icon(
-            Icons.arrow_back_ios_new,
-            size: 20,
-          ),
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           color: AppColors.textPrimary,
         ),
         title: const Text(
@@ -61,9 +54,7 @@ class _CartScreenState
               onPressed: controller.isUpdating
                   ? null
                   : () => _confirmClearCart(),
-              icon: const Icon(
-                Icons.delete_outline,
-              ),
+              icon: const Icon(Icons.delete_outline),
               color: AppColors.textPrimary,
             ),
         ],
@@ -72,19 +63,14 @@ class _CartScreenState
     );
   }
 
-  Widget _buildBody(
-    CartController controller,
-  ) {
+  Widget _buildBody(CartController controller) {
     if (controller.isLoading) {
       return const Center(
-        child: CircularProgressIndicator(
-          color: AppColors.primary,
-        ),
+        child: CircularProgressIndicator(color: AppColors.primary),
       );
     }
 
-    if (controller.error != null &&
-        controller.cart == null) {
+    if (controller.error != null && controller.cart == null) {
       return _CartError(
         error: controller.error!,
         onRetry: () {
@@ -105,33 +91,19 @@ class _CartScreenState
         return ref.read(cartProvider).loadCart();
       },
       child: ListView(
-        physics:
-            const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(
-          14,
-          14,
-          14,
-          24,
-        ),
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 24),
         children: [
           _buildCartHeader(cart),
           const SizedBox(height: 12),
           ...cart.items.map(
             (item) => Padding(
-              padding: const EdgeInsets.only(
-                bottom: 10,
-              ),
+              padding: const EdgeInsets.only(bottom: 10),
               child: _CartItemCard(
                 item: item,
-                disabled:
-                    controller.isUpdating,
+                disabled: controller.isUpdating,
                 onIncrease: () {
-                  ref
-                      .read(cartProvider)
-                      .updateQuantity(
-                        cartItemId: item.id,
-                        quantity: item.quantity + 1,
-                      );
+                  _changeQuantity(item, item.quantity + 1);
                 },
                 onDecrease: () {
                   if (item.quantity <= 1) {
@@ -139,12 +111,7 @@ class _CartScreenState
                     return;
                   }
 
-                  ref
-                      .read(cartProvider)
-                      .updateQuantity(
-                        cartItemId: item.id,
-                        quantity: item.quantity - 1,
-                      );
+                  _changeQuantity(item, item.quantity - 1);
                 },
                 onRemove: () {
                   _confirmRemove(item);
@@ -161,18 +128,14 @@ class _CartScreenState
     );
   }
 
-  Widget _buildCartHeader(
-    CartModel cart,
-  ) {
+  Widget _buildCartHeader(CartModel cart) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: AppColors.border,
-        ),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         children: [
@@ -180,8 +143,7 @@ class _CartScreenState
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color:
-                  AppColors.primary.withValues(alpha: .09),
+              color: AppColors.primary.withValues(alpha: .09),
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -192,8 +154,7 @@ class _CartScreenState
           const SizedBox(width: 12),
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
                   'Your Cart',
@@ -227,17 +188,13 @@ class _CartScreenState
     );
   }
 
-  Widget _buildPriceSummary(
-    CartController controller,
-  ) {
+  Widget _buildPriceSummary(CartController controller) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: AppColors.border,
-        ),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         children: [
@@ -255,28 +212,21 @@ class _CartScreenState
           const SizedBox(height: 14),
           _PriceRow(
             label: 'MRP',
-            value:
-                '₹${controller.totalMrp.toStringAsFixed(0)}',
+            value: '₹${controller.totalMrp.toStringAsFixed(0)}',
           ),
           const SizedBox(height: 10),
           _PriceRow(
             label: 'Discount',
-            value:
-                '- ₹${controller.totalSavings.toStringAsFixed(0)}',
+            value: '- ₹${controller.totalSavings.toStringAsFixed(0)}',
             valueColor: AppColors.primary,
           ),
           const Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: 12,
-            ),
-            child: Divider(
-              height: 1,
-            ),
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Divider(height: 1),
           ),
           _PriceRow(
             label: 'Subtotal',
-            value:
-                '₹${controller.subtotal.toStringAsFixed(0)}',
+            value: '₹${controller.subtotal.toStringAsFixed(0)}',
             bold: true,
           ),
         ],
@@ -290,12 +240,9 @@ class _CartScreenState
       height: 52,
       child: FilledButton(
         onPressed: () {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text(
-                'Checkout will be connected in Module 13.',
-              ),
+              content: Text('Checkout will be connected in Module 13.'),
             ),
           );
         },
@@ -307,29 +254,46 @@ class _CartScreenState
         ),
         child: const Text(
           'Proceed to Checkout',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w900,
-          ),
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900),
         ),
       ),
     );
   }
 
-  Future<void> _confirmRemove(
-    CartItemModel item,
-  ) async {
-    final shouldRemove =
-        await showDialog<bool>(
+  Future<void> _changeQuantity(CartItemModel item, int quantity) async {
+    final success = await ref
+        .read(cartProvider)
+        .updateQuantity(cartItemId: item.id, quantity: quantity);
+
+    if (!success) {
+      _showCartMutationError();
+    }
+  }
+
+  void _showCartMutationError() {
+    if (!mounted) return;
+
+    final error = ref.read(cartProvider).error;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            error?.toString() ??
+                'Unable to update your cart. Please try again.',
+          ),
+          backgroundColor: Colors.red.shade700,
+        ),
+      );
+  }
+
+  Future<void> _confirmRemove(CartItemModel item) async {
+    final shouldRemove = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text(
-            'Remove item?',
-          ),
-          content: Text(
-            'Remove ${item.product.name} from your cart?',
-          ),
+          title: const Text('Remove item?'),
+          content: Text('Remove ${item.product.name} from your cart?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -341,9 +305,7 @@ class _CartScreenState
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-              ),
+              style: FilledButton.styleFrom(backgroundColor: AppColors.primary),
               child: const Text('Remove'),
             ),
           ],
@@ -355,23 +317,20 @@ class _CartScreenState
       return;
     }
 
-    await ref.read(cartProvider).removeItem(
-          item.id,
-        );
+    final success = await ref.read(cartProvider).removeItem(item.id);
+
+    if (!success) {
+      _showCartMutationError();
+    }
   }
 
   Future<void> _confirmClearCart() async {
-    final shouldClear =
-        await showDialog<bool>(
+    final shouldClear = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text(
-            'Clear cart?',
-          ),
-          content: const Text(
-            'All products will be removed from your cart.',
-          ),
+          title: const Text('Clear cart?'),
+          content: const Text('All products will be removed from your cart.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -383,9 +342,7 @@ class _CartScreenState
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-              ),
+              style: FilledButton.styleFrom(backgroundColor: AppColors.primary),
               child: const Text('Clear Cart'),
             ),
           ],
@@ -397,7 +354,11 @@ class _CartScreenState
       return;
     }
 
-    await ref.read(cartProvider).clearCart();
+    final success = await ref.read(cartProvider).clearCart();
+
+    if (!success) {
+      _showCartMutationError();
+    }
   }
 }
 
@@ -425,29 +386,23 @@ class _CartItemCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: AppColors.border,
-        ),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: SizedBox(
               width: 86,
               height: 86,
-              child: _CartProductImage(
-                imageUrl: product.imageUrl,
-              ),
+              child: _CartProductImage(imageUrl: product.imageUrl),
             ),
           ),
           const SizedBox(width: 11),
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   product.name,
@@ -478,8 +433,7 @@ class _CartItemCard extends StatelessWidget {
                         style: const TextStyle(
                           color: Color(0xFF9CA3AF),
                           fontSize: 10,
-                          decoration:
-                              TextDecoration.lineThrough,
+                          decoration: TextDecoration.lineThrough,
                         ),
                       ),
                     ],
@@ -491,28 +445,17 @@ class _CartItemCard extends StatelessWidget {
                     Container(
                       height: 34,
                       decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(8),
-                        border: Border.all(
-                          color: AppColors.border,
-                        ),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: AppColors.border),
                       ),
                       child: Row(
                         children: [
                           IconButton(
-                            onPressed: disabled
-                                ? null
-                                : onDecrease,
-                            icon: const Icon(
-                              Icons.remove,
-                              size: 15,
-                            ),
-                            color:
-                                AppColors.primary,
-                            padding:
-                                EdgeInsets.zero,
-                            constraints:
-                                const BoxConstraints(
+                            onPressed: disabled ? null : onDecrease,
+                            icon: const Icon(Icons.remove, size: 15),
+                            color: AppColors.primary,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(
                               minWidth: 32,
                               minHeight: 32,
                             ),
@@ -521,30 +464,19 @@ class _CartItemCard extends StatelessWidget {
                             width: 25,
                             child: Text(
                               '${item.quantity}',
-                              textAlign:
-                                  TextAlign.center,
-                              style:
-                                  const TextStyle(
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
                                 fontSize: 12,
-                                fontWeight:
-                                    FontWeight.w900,
+                                fontWeight: FontWeight.w900,
                               ),
                             ),
                           ),
                           IconButton(
-                            onPressed: disabled
-                                ? null
-                                : onIncrease,
-                            icon: const Icon(
-                              Icons.add,
-                              size: 15,
-                            ),
-                            color:
-                                AppColors.primary,
-                            padding:
-                                EdgeInsets.zero,
-                            constraints:
-                                const BoxConstraints(
+                            onPressed: disabled ? null : onIncrease,
+                            icon: const Icon(Icons.add, size: 15),
+                            color: AppColors.primary,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(
                               minWidth: 32,
                               minHeight: 32,
                             ),
@@ -554,16 +486,11 @@ class _CartItemCard extends StatelessWidget {
                     ),
                     const Spacer(),
                     IconButton(
-                      onPressed:
-                          disabled ? null : onRemove,
-                      icon: const Icon(
-                        Icons.delete_outline,
-                        size: 20,
-                      ),
+                      onPressed: disabled ? null : onRemove,
+                      icon: const Icon(Icons.delete_outline, size: 20),
                       color: Colors.red,
                       padding: EdgeInsets.zero,
-                      constraints:
-                          const BoxConstraints(
+                      constraints: const BoxConstraints(
                         minWidth: 34,
                         minHeight: 34,
                       ),
@@ -579,18 +506,14 @@ class _CartItemCard extends StatelessWidget {
   }
 }
 
-class _CartProductImage
-    extends StatelessWidget {
-  const _CartProductImage({
-    required this.imageUrl,
-  });
+class _CartProductImage extends StatelessWidget {
+  const _CartProductImage({required this.imageUrl});
 
   final String? imageUrl;
 
   @override
   Widget build(BuildContext context) {
-    if (imageUrl == null ||
-        imageUrl!.trim().isEmpty) {
+    if (imageUrl == null || imageUrl!.trim().isEmpty) {
       return Container(
         color: AppColors.background,
         alignment: Alignment.center,
@@ -655,19 +578,16 @@ class _PriceRow extends StatelessWidget {
             style: TextStyle(
               color: AppColors.textSecondary,
               fontSize: 12,
-              fontWeight:
-                  bold ? FontWeight.w800 : FontWeight.w500,
+              fontWeight: bold ? FontWeight.w800 : FontWeight.w500,
             ),
           ),
         ),
         Text(
           value,
           style: TextStyle(
-            color:
-                valueColor ?? AppColors.textPrimary,
+            color: valueColor ?? AppColors.textPrimary,
             fontSize: 12,
-            fontWeight:
-                bold ? FontWeight.w900 : FontWeight.w700,
+            fontWeight: bold ? FontWeight.w900 : FontWeight.w700,
           ),
         ),
       ],
@@ -690,8 +610,7 @@ class _EmptyCart extends StatelessWidget {
               width: 92,
               height: 92,
               decoration: BoxDecoration(
-                color:
-                    AppColors.primary.withValues(alpha: .09),
+                color: AppColors.primary.withValues(alpha: .09),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -727,10 +646,7 @@ class _EmptyCart extends StatelessWidget {
 }
 
 class _CartError extends StatelessWidget {
-  const _CartError({
-    required this.error,
-    required this.onRetry,
-  });
+  const _CartError({required this.error, required this.onRetry});
 
   final Object error;
   final VoidCallback onRetry;
@@ -743,11 +659,7 @@ class _CartError extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.cloud_off_outlined,
-              size: 48,
-              color: Colors.red,
-            ),
+            const Icon(Icons.cloud_off_outlined, size: 48, color: Colors.red),
             const SizedBox(height: 14),
             const Text(
               'Unable to load cart',
@@ -769,9 +681,7 @@ class _CartError extends StatelessWidget {
             const SizedBox(height: 18),
             FilledButton(
               onPressed: onRetry,
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-              ),
+              style: FilledButton.styleFrom(backgroundColor: AppColors.primary),
               child: const Text('Try Again'),
             ),
           ],

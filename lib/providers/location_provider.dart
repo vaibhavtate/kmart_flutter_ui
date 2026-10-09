@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 import '../models/store_model.dart';
 import '../repositories/store_repository.dart';
 import '../services/location_service.dart';
@@ -13,8 +12,7 @@ final locationServiceProvider = Provider<LocationService>(
   (ref) => LocationService(),
 );
 
-final locationProvider =
-    NotifierProvider<LocationController, LocationState>(
+final locationProvider = NotifierProvider<LocationController, LocationState>(
   LocationController.new,
 );
 
@@ -59,45 +57,45 @@ class LocationState {
     bool? isDeliverable,
     String? error,
     bool clearError = false,
+    bool clearSelectedStore = false,
+    bool clearDistance = false,
+    bool clearCoordinates = false,
   }) {
     return LocationState(
       isLoading: isLoading ?? this.isLoading,
       isSearching: isSearching ?? this.isSearching,
-      searchResults:
-          searchResults ?? this.searchResults,
-      selectedAddress:
-          selectedAddress ?? this.selectedAddress,
-      latitude: latitude ?? this.latitude,
-      longitude: longitude ?? this.longitude,
-      selectedStore:
-          selectedStore ?? this.selectedStore,
-      distanceKm:
-          distanceKm ?? this.distanceKm,
-      isDeliverable:
-          isDeliverable ?? this.isDeliverable,
+      searchResults: searchResults ?? this.searchResults,
+      selectedAddress: selectedAddress ?? this.selectedAddress,
+      latitude: clearCoordinates ? null : latitude ?? this.latitude,
+      longitude: clearCoordinates ? null : longitude ?? this.longitude,
+      selectedStore: clearSelectedStore
+          ? null
+          : selectedStore ?? this.selectedStore,
+      distanceKm: clearDistance ? null : distanceKm ?? this.distanceKm,
+      isDeliverable: isDeliverable ?? this.isDeliverable,
       error: clearError ? null : error ?? this.error,
     );
   }
 }
 
-class LocationController
-    extends Notifier<LocationState> {
-  late final LocationService _locationService;
-  late final StoreRepository _storeRepository;
+class LocationController extends Notifier<LocationState> {
+  int _searchRequestId = 0;
+  late LocationService _locationService;
+  late StoreRepository _storeRepository;
 
   @override
   LocationState build() {
-    _locationService =
-        ref.read(locationServiceProvider);
+    _locationService = ref.read(locationServiceProvider);
 
-    _storeRepository =
-        ref.read(storeRepositoryProvider);
+    _storeRepository = ref.read(storeRepositoryProvider);
 
     return const LocationState();
   }
 
   Future<void> search(String query) async {
     final trimmedQuery = query.trim();
+
+    final requestId = ++_searchRequestId;
 
     if (trimmedQuery.length < 3) {
       state = state.copyWith(
@@ -108,40 +106,29 @@ class LocationController
       return;
     }
 
-    state = state.copyWith(
-      isSearching: true,
-      clearError: true,
-    );
+    state = state.copyWith(isSearching: true, clearError: true);
 
     try {
-      final results =
-          await _locationService.searchLocation(
-        trimmedQuery,
-      );
+      final results = await _locationService.searchLocation(trimmedQuery);
 
-      state = state.copyWith(
-        isSearching: false,
-        searchResults: results,
-      );
+      if (requestId != _searchRequestId) return;
+
+      state = state.copyWith(isSearching: false, searchResults: results);
     } catch (e) {
+      if (requestId != _searchRequestId) return;
       state = state.copyWith(
         isSearching: false,
         searchResults: const [],
-        error:
-            'Unable to search this location. Please try again.',
+        error: 'Unable to search this location. Please try again.',
       );
     }
   }
 
   Future<void> useCurrentLocation() async {
-    state = state.copyWith(
-      isLoading: true,
-      clearError: true,
-    );
+    state = state.copyWith(isLoading: true, clearError: true);
 
     try {
-      final position =
-          await _locationService.getCurrentPosition();
+      final position = await _locationService.getCurrentPosition();
 
       await selectLocation(
         latitude: position.latitude,
@@ -156,9 +143,7 @@ class LocationController
     }
   }
 
-  Future<void> selectSearchResult(
-    LocationSearchResult result,
-  ) async {
+  Future<void> selectSearchResult(LocationSearchResult result) async {
     await selectLocation(
       latitude: result.latitude,
       longitude: result.longitude,
@@ -173,12 +158,15 @@ class LocationController
   }) async {
     state = state.copyWith(
       isLoading: true,
+      searchResults: const [],
+      isDeliverable: false,
+      clearSelectedStore: true,
+      clearDistance: true,
       clearError: true,
     );
 
     try {
-      final stores =
-          await _storeRepository.getActiveStores();
+      final stores = await _storeRepository.getActiveStores();
 
       if (stores.isEmpty) {
         state = state.copyWith(
@@ -186,14 +174,15 @@ class LocationController
           selectedAddress: address,
           latitude: latitude,
           longitude: longitude,
-          error:
-              'K Mart delivery is currently unavailable because no active store is available.',
+          isDeliverable: false,
+          clearSelectedStore: true,
+          clearDistance: true,
+          error: 'K Mart delivery is currently unavailable because no active store is available.',
         );
         return;
       }
 
-      final nearest =
-          _locationService.findNearestStore(
+      final nearest = _locationService.findNearestStore(
         latitude: latitude,
         longitude: longitude,
         stores: stores,
@@ -205,8 +194,10 @@ class LocationController
           selectedAddress: address,
           latitude: latitude,
           longitude: longitude,
-          error:
-              'We could not find a K Mart store near this location.',
+          isDeliverable: false,
+          clearSelectedStore: true,
+          clearDistance: true,
+          error: 'We could not find a K Mart store near this location.',
         );
         return;
       }
@@ -223,6 +214,9 @@ class LocationController
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
+        isDeliverable: false,
+        clearSelectedStore: true,
+        clearDistance: true,
         error:
             'Unable to check K Mart delivery availability. Please try again.',
       );
@@ -230,29 +224,21 @@ class LocationController
   }
 
   void clearError() {
-    state = state.copyWith(
-      clearError: true,
-    );
+    state = state.copyWith(clearError: true);
   }
 
   String _friendlyLocationError(Object error) {
     final message = error.toString();
 
-    if (message.contains(
-      'Location services are disabled',
-    )) {
+    if (message.contains('Location services are disabled')) {
       return 'Location services are disabled. Please enable them and try again.';
     }
 
-    if (message.contains(
-      'permission was denied',
-    )) {
+    if (message.contains('permission was denied')) {
       return 'Location permission was denied. Please allow location access to continue.';
     }
 
-    if (message.contains(
-      'permanently denied',
-    )) {
+    if (message.contains('permanently denied')) {
       return 'Location permission is permanently denied. Please enable it from device settings.';
     }
 

@@ -5,25 +5,18 @@ import '../../core/theme/app_colors.dart';
 import '../../providers/auth_provider.dart';
 
 class OtpScreen extends ConsumerStatefulWidget {
-  const OtpScreen({
-    super.key,
-    required this.phone,
-  });
+  const OtpScreen({super.key, required this.phone});
 
   final String phone;
 
   @override
-  ConsumerState<OtpScreen> createState() =>
-      _OtpScreenState();
+  ConsumerState<OtpScreen> createState() => _OtpScreenState();
 }
 
-class _OtpScreenState
-    extends ConsumerState<OtpScreen> {
-  final _otpController =
-      TextEditingController();
+class _OtpScreenState extends ConsumerState<OtpScreen> {
+  final _otpController = TextEditingController();
 
-  final _formKey =
-      GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -38,17 +31,12 @@ class _OtpScreenState
 
     final success = await ref
         .read(authControllerProvider.notifier)
-        .verifyOtp(
-          phone: widget.phone,
-          token: _otpController.text.trim(),
-        );
+        .verifyOtp(phone: widget.phone, token: _otpController.text.trim());
 
     if (!mounted) return;
 
     if (success) {
-      Navigator.of(context).popUntil(
-        (route) => route.isFirst,
-      );
+      Navigator.of(context).popUntil((route) => route.isFirst);
     }
   }
 
@@ -59,38 +47,28 @@ class _OtpScreenState
 
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          success
-              ? 'OTP sent again.'
-              : 'Unable to resend OTP.',
-        ),
+        content: Text(success ? 'OTP sent again.' : 'Unable to resend OTP.'),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final authState =
-        ref.watch(authControllerProvider);
+    final authState = ref.watch(authControllerProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        surfaceTintColor:
-            Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: const Icon(
-            Icons.arrow_back_ios_new,
-            size: 20,
-          ),
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           color: AppColors.textPrimary,
         ),
         title: const Text(
@@ -114,8 +92,7 @@ class _OtpScreenState
                     width: 76,
                     height: 76,
                     decoration: BoxDecoration(
-                      color: AppColors.primary
-                          .withValues(alpha: .09),
+                      color: AppColors.primary.withValues(alpha: .09),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
@@ -138,8 +115,7 @@ class _OtpScreenState
                     'We sent a verification code to\n${widget.phone}',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      color:
-                          AppColors.textSecondary,
+                      color: AppColors.textSecondary,
                       fontSize: 13,
                       height: 1.5,
                     ),
@@ -147,8 +123,7 @@ class _OtpScreenState
                   const SizedBox(height: 30),
                   TextFormField(
                     controller: _otpController,
-                    keyboardType:
-                        TextInputType.number,
+                    keyboardType: TextInputType.number,
                     maxLength: 6,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
@@ -162,43 +137,29 @@ class _OtpScreenState
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          color: AppColors.border,
-                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: AppColors.border),
                       ),
-                      enabledBorder:
-                          OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          color: AppColors.border,
-                        ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: AppColors.border),
                       ),
-                      focusedBorder:
-                          OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(12),
-                        borderSide:
-                            const BorderSide(
-                          color:
-                              AppColors.primary,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: AppColors.primary,
                           width: 1.5,
                         ),
                       ),
                     ),
                     validator: (value) {
-                      final otp =
-                          value?.trim() ?? '';
+                      final otp = value?.trim() ?? '';
 
                       if (otp.length != 6) {
                         return 'Enter the 6-digit OTP';
                       }
 
-                      if (!RegExp(
-                        r'^[0-9]{6}$',
-                      ).hasMatch(otp)) {
+                      if (!RegExp(r'^[0-9]{6}$').hasMatch(otp)) {
                         return 'Enter a valid OTP';
                       }
 
@@ -210,10 +171,7 @@ class _OtpScreenState
                     Text(
                       authState.error!,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.red,
-                        fontSize: 12,
-                      ),
+                      style: const TextStyle(color: Colors.red, fontSize: 12),
                     ),
                   ],
                   const SizedBox(height: 18),
@@ -221,27 +179,18 @@ class _OtpScreenState
                     width: double.infinity,
                     height: 52,
                     child: FilledButton(
-                      onPressed: authState.isLoading
-                          ? null
-                          : _verifyOtp,
-                      style:
-                          FilledButton.styleFrom(
-                        backgroundColor:
-                            AppColors.primary,
-                        shape:
-                            RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(
-                            12,
-                          ),
+                      onPressed: authState.isLoading ? null : _verifyOtp,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       child: authState.isLoading
                           ? const SizedBox(
                               width: 21,
                               height: 21,
-                              child:
-                                  CircularProgressIndicator(
+                              child: CircularProgressIndicator(
                                 strokeWidth: 2,
                                 color: Colors.white,
                               ),
@@ -250,17 +199,14 @@ class _OtpScreenState
                               'Verify OTP',
                               style: TextStyle(
                                 fontSize: 14,
-                                fontWeight:
-                                    FontWeight.w900,
+                                fontWeight: FontWeight.w900,
                               ),
                             ),
                     ),
                   ),
                   const SizedBox(height: 14),
                   TextButton(
-                    onPressed: authState.isLoading
-                        ? null
-                        : _resendOtp,
+                    onPressed: authState.isLoading ? null : _resendOtp,
                     child: const Text(
                       'Resend OTP',
                       style: TextStyle(

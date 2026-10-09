@@ -4,9 +4,8 @@ import '../models/category_model.dart';
 import '../models/product_model.dart';
 
 class ProductRepository {
-  ProductRepository({
-    SupabaseClient? client,
-  }) : _client = client ?? Supabase.instance.client;
+  ProductRepository({SupabaseClient? client})
+    : _client = client ?? Supabase.instance.client;
 
   final SupabaseClient _client;
 
@@ -22,13 +21,12 @@ class ProductRepository {
     final response = await _client
         .from('categories')
         .select()
+        .eq('active', true)
         .order('name');
 
     return (response as List)
         .map(
-          (row) => CategoryModel.fromMap(
-            Map<String, dynamic>.from(row as Map),
-          ),
+          (row) => CategoryModel.fromMap(Map<String, dynamic>.from(row as Map)),
         )
         .toList();
   }
@@ -55,8 +53,7 @@ class ProductRepository {
         .eq('store_id', storeId)
         .gt('stock_quantity', customerStockThreshold);
 
-    if (
-        inventoryResponse.isEmpty) {
+    if (inventoryResponse.isEmpty) {
       return [];
     }
 
@@ -98,9 +95,7 @@ class ProductRepository {
 
     final products = (response as List)
         .map(
-          (row) => ProductModel.fromMap(
-            Map<String, dynamic>.from(row as Map),
-          ),
+          (row) => ProductModel.fromMap(Map<String, dynamic>.from(row as Map)),
         )
         .toList();
 
@@ -149,8 +144,7 @@ class ProductRepository {
         .eq('store_id', storeId)
         .gt('stock_quantity', customerStockThreshold);
 
-    if (
-        inventoryResponse.isEmpty) {
+    if (inventoryResponse.isEmpty) {
       return [];
     }
 
@@ -192,9 +186,7 @@ class ProductRepository {
 
     final products = (response as List)
         .map(
-          (row) => ProductModel.fromMap(
-            Map<String, dynamic>.from(row as Map),
-          ),
+          (row) => ProductModel.fromMap(Map<String, dynamic>.from(row as Map)),
         )
         .toList();
 

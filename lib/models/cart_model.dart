@@ -15,18 +15,13 @@ class CartItemModel {
   final int quantity;
   final ProductModel product;
 
-  double get totalPrice =>
-      product.sellingPrice * quantity;
+  double get totalPrice => product.sellingPrice * quantity;
 
-  double get totalMrp =>
-      product.mrp * quantity;
+  double get totalMrp => product.mrp * quantity;
 
-  double get totalSavings =>
-      totalMrp - totalPrice;
+  double get totalSavings => totalMrp - totalPrice;
 
-  CartItemModel copyWith({
-    int? quantity,
-  }) {
+  CartItemModel copyWith({int? quantity}) {
     return CartItemModel(
       id: id,
       cartId: cartId,
@@ -51,24 +46,15 @@ class CartModel {
   final DateTime? updatedAt;
 
   int get totalItems {
-    return items.fold(
-      0,
-      (total, item) => total + item.quantity,
-    );
+    return items.fold(0, (total, item) => total + item.quantity);
   }
 
   double get subtotal {
-    return items.fold(
-      0,
-      (total, item) => total + item.totalPrice,
-    );
+    return items.fold(0, (total, item) => total + item.totalPrice);
   }
 
   double get totalMrp {
-    return items.fold(
-      0,
-      (total, item) => total + item.totalMrp,
-    );
+    return items.fold(0, (total, item) => total + item.totalMrp);
   }
 
   double get totalSavings {
@@ -77,9 +63,7 @@ class CartModel {
 
   bool get isEmpty => items.isEmpty;
 
-  CartModel copyWith({
-    List<CartItemModel>? items,
-  }) {
+  CartModel copyWith({List<CartItemModel>? items}) {
     return CartModel(
       id: id,
       customerId: customerId,

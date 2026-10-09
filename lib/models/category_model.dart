@@ -1,4 +1,3 @@
-
 class CategoryModel {
   const CategoryModel({
     required this.id,
